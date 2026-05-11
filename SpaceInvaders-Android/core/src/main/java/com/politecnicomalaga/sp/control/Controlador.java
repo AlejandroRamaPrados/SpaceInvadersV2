@@ -47,13 +47,11 @@ public class Controlador {
     }
     public void simulaMundo(float anchoPantalla, float altoPantalla){
         //Comprobar si he muerto
-        if (!naveAmiga.estaVivo()){
-            jugando=false;
-        }
+        jugando = naveAmiga.estaVivo() && batallon.tieneTropas();
 
         if (jugando){
             //Comprobar si he ganado
-            jugando=comprobarSiGano(batallon);
+            jugando=!comprobarSiGano(batallon);
 
             //disparo yo?
             contadorTiempoAmigo++;
@@ -65,21 +63,16 @@ public class Controlador {
             //disparan los enemigos?
             getContadorTiempoEnemigo++;
             if (getContadorTiempoEnemigo==cadenciaEnemiga){
-                dispararTodosLosEnemigos(batallon);
+                batallon.disparar();
                 getContadorTiempoEnemigo=0;
             }
 
-            //me han dado
-            hanDadoNaveAmiga(batallon, naveAmiga);
+            //Colisiones
+            hanDadoNaveAmiga(batallon, naveAmiga); //Con un disparo
+            hematado(batallon, naveAmiga.getMisDisparos()); //He dado mi disparo
+            meHanTocado(batallon, naveAmiga); // Me han chocado fisicamente
 
-            // he matado a alguien?
-            List<DisparoAmi> disparoAmis = naveAmiga.getMisDisparos();
-            hematado(batallon, disparoAmis);
-
-            //me han tocado los aliens?
-            meHanTocado(batallon, naveAmiga);
-
-            //me muevo?
+            //Movimiento
             if (naveAmiga.getX()>anchoPantalla-naveAmiga.getWidth()){
                 naveAmiga.setX(anchoPantalla-naveAmiga.getWidth());
                 naveAmiga.setDir(Ovni.Direccion.NOMOVER);
@@ -89,128 +82,42 @@ public class Controlador {
                 naveAmiga.setDir(Ovni.Direccion.NOMOVER);
             }
             naveAmiga.mover(naveAmiga.getDir(),velocidadNave);
-
-            //SE MUEVE EL ESCUADRÓN
             batallon.mover(anchoPantalla,altoPantalla,20);
 
             //gestiono todos los disparos
-            //Los amigos
             naveAmiga.gestionarMisDisparos(altoPantalla);
-
-            //Los enemigos
-            gestioanrDisparosBatallon( batallon, 0);
+            batallon.gestionarDisparos(0);
         }
     }
 
     public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
-        //pintar naveAmiga
-        batch.draw(galeriaImagenes.get(naveAmiga.getTextura()),naveAmiga.getX(),naveAmiga.getY(),naveAmiga.getWidth(),naveAmiga.getHeight());
-
-        //pintar navesEnemigas y sus disparos
-        Escuadron[] escuadrones = batallon.getEscuadrones();
-        for (Escuadron esc: escuadrones){
-            NaveEne[] naveEnes = esc.getNavesEnemigas();
-            for (NaveEne navE: naveEnes){
-                if (navE.estaVivo()) {
-                    batch.draw(galeriaImagenes.get(navE.getTextura()), navE.getX(), navE.getY(), navE.getWidth(), navE.getHeight());
-                }
-                List<DisparoEne> disparosEnemigos = navE.getMisDisparos();
-                for (DisparoEne disEne: disparosEnemigos){
-                    batch.draw(galeriaImagenes.get(disEne.getTextura()),disEne.getX(),disEne.getY(),disEne.getWidth(),disEne.getHeight());
-                }
-            }
-        }
-        //Pintar disparosAmigos
-        List<DisparoAmi> disparosAmigos = naveAmiga.getMisDisparos();
-        for (DisparoAmi dispAmi: disparosAmigos){
-            if (dispAmi.estaVivo()){
-                batch.draw(galeriaImagenes.get(dispAmi.getTextura()),dispAmi.getX(),dispAmi.getY(),dispAmi.getWidth(),dispAmi.getHeight());
-            }
-        }
-
+        naveAmiga.pintar(batch, galeriaImagenes);
+        batallon.pintar(batch, galeriaImagenes);
     }
 
     public void cambiarSentidoNaveAmiga (float x){
-        if (x>naveAmiga.getX() && naveAmiga.getDir()!= Ovni.Direccion.DERECHA){
-            naveAmiga.setDir(Ovni.Direccion.DERECHA);
-        } else if (x>naveAmiga.getX() && naveAmiga.getDir()== Ovni.Direccion.DERECHA) {
-            naveAmiga.setDir(Ovni.Direccion.NOMOVER);
-        } else if (x<naveAmiga.getX() && naveAmiga.getDir()!= Ovni.Direccion.IZQUIERDA){
-            naveAmiga.setDir(Ovni.Direccion.IZQUIERDA);
-        } else if (x<naveAmiga.getX() && naveAmiga.getDir() == Ovni.Direccion.IZQUIERDA){
-            naveAmiga.setDir(Ovni.Direccion.NOMOVER);
+        float naveX = naveAmiga.getX();
+        Ovni.Direccion actual = naveAmiga.getDir();
+
+        if (x>naveX){
+            naveAmiga.setDir(actual== Ovni.Direccion.DERECHA ? Ovni.Direccion.NOMOVER: Ovni.Direccion.DERECHA);
+        } else if (x< naveX) {
+            naveAmiga.setDir(actual== Ovni.Direccion.IZQUIERDA? Ovni.Direccion.NOMOVER: Ovni.Direccion.IZQUIERDA);
         }
     }
 
     public void hanDadoNaveAmiga(Batallon batallon, NaveAmi naveAmiga){
-        Escuadron[] escuadrones = batallon.getEscuadrones();
-        for (Escuadron escuadron: escuadrones){
-            NaveEne[] navesEnemigas = escuadron.getNavesEnemigas();
-            for (NaveEne naveEne: navesEnemigas){
-                List<DisparoEne> disparoEnes = naveEne.getMisDisparos();
-                for (DisparoEne disparoEne: disparoEnes){
-                    disparoEne.comprobarColision(naveAmiga);
-                }
-            }
-        }
+        batallon.comprobarColisionesDisparo(naveAmiga);
     }
-
     public  void hematado(Batallon batallon, List<DisparoAmi> disparoAmis){
-        Escuadron[] escuadrones = batallon.getEscuadrones();
         for (DisparoAmi disparoAmi: disparoAmis){
-            for (Escuadron escuadron: escuadrones){
-                NaveEne[] navesEnemigas = escuadron.getNavesEnemigas();
-                disparoAmi.comprobarColision(navesEnemigas);
-            }
+            batallon.comprobarSiMeHanDado(disparoAmi);
         }
-
     }
-
     public void meHanTocado(Batallon batallon, NaveAmi naveAmiga) {
-        Escuadron[] escuadrones = batallon.getEscuadrones();
-        for (Escuadron escuadron : escuadrones) {
-            NaveEne[] navesEnemigas = escuadron.getNavesEnemigas();
-            for (NaveEne naveEne : navesEnemigas) {
-                if (naveEne.estaVivo() && naveEne.colision(naveAmiga)) {
-                    naveEne.setEstado(Ovni.Estado.MUERTO);
-                    naveAmiga.setVidas(naveAmiga.getVidas() - 1);
-                }
-            }
-        }
-
-
+        batallon.comprobarColisionesFisicas(naveAmiga);
     }
-
-    public void dispararTodosLosEnemigos (Batallon batallon){
-        Escuadron[] escuadrones = batallon.getEscuadrones();
-        for (Escuadron escuadron : escuadrones) {
-            NaveEne[] navesEnemigas = escuadron.getNavesEnemigas();
-            for (NaveEne naveEne : navesEnemigas) {
-                naveEne.disparar();
-            }
-        }
-    }
-
-    public void gestioanrDisparosBatallon(Batallon batallon, float limiteSuperior){
-        Escuadron[] escuadrones = batallon.getEscuadrones();
-        for (Escuadron escuadron : escuadrones) {
-            NaveEne[] navesEnemigas = escuadron.getNavesEnemigas();
-            for (NaveEne naveEne : navesEnemigas) {
-                naveEne.gestionarMisDisparos(limiteSuperior);
-            }
-        }
-    }
-
     public boolean comprobarSiGano(Batallon batallon){
-        Escuadron[] escuadrones = batallon.getEscuadrones();
-        for (Escuadron escuadron: escuadrones){
-            NaveEne[] naveEnes = escuadron.getNavesEnemigas();
-            for (NaveEne naveEne: naveEnes){
-                if (naveEne.estaVivo()){
-                    return true;
-                }
-            }
-        }
-        return false;
+        return !batallon.hayNavesVivas();
     }
 }

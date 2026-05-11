@@ -1,4 +1,10 @@
 package com.politecnicomalaga.sp.model;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.util.Map;
+
 public class Batallon {
     //Atributos
     //Composición de 4 escuadrones
@@ -113,5 +119,31 @@ public class Batallon {
             }
         }
         return false; // Si revisa todos y nadie tiene naves vivas, se acabó el juego, hemos ganado
+    }
+
+    public void comprobarColisionesDisparo(NaveAmi naveAmiga){
+        for (Escuadron esc : escuadrones){
+            esc.comprobarColisionesDisparo(naveAmiga);
+        }
+    }
+    public void comprobarSiMeHanDado(DisparoAmi disparoAmi){
+        for (Escuadron esc : escuadrones){
+            esc.comprobarSiMeHanDado(disparoAmi);
+        }
+    }
+
+    public void comprobarColisionesFisicas(NaveAmi naveAmiga){
+        for (Escuadron esc : escuadrones){
+            esc.comprobarColisionesFisicas(naveAmiga);
+        }
+    }
+    public boolean hayNavesVivas(){
+        return tieneTropas();
+    }
+
+    public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        for (Escuadron esc : escuadrones){
+            esc.pintar(batch, galeriaImagenes);
+        }
     }
 }

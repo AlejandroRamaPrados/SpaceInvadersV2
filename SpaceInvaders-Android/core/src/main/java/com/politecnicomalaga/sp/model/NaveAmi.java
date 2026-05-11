@@ -1,6 +1,10 @@
 package com.politecnicomalaga.sp.model;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 public class NaveAmi extends Nave {
     //Atributos
@@ -46,6 +50,14 @@ public class NaveAmi extends Nave {
                 d.desaparecer(limiteSuperior); //Preguntamos si se ha salido de la pantalla y este setea el estado a muerto
             }
             if (d.getEstado() == Estado.MUERTO) misDisparos.remove(i); //Lo eliminamos si la comprobación de desaparecer de la pantalla ya nos da que esta Muerto
+        }
+    }
+
+    public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        batch.draw(galeriaImagenes.get(this.getTextura()),this.getX(),this.getY(), this.getWidth(), this.getHeight());
+
+        for (DisparoAmi d: misDisparos){
+            if(d.getEstado() == Estado.VIVO) d.pintar(batch, galeriaImagenes);
         }
     }
 }

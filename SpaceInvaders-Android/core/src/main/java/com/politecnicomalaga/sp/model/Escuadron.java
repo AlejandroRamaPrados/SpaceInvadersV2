@@ -1,6 +1,10 @@
 package com.politecnicomalaga.sp.model;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import java.lang.reflect.Array;
+import java.util.Map;
 
 public class Escuadron {
     NaveEne [] navesEnemigas;
@@ -81,6 +85,35 @@ public class Escuadron {
         for (NaveEne naveEne :navesEnemigas){
             if (naveEne.estaVivo()) {
                 naveEne.disparar();
+            }
+        }
+    }
+
+    public void comprobarColisionesDisparo(NaveAmi naveAmiga){
+        for (NaveEne naveEne :navesEnemigas){
+            if (naveEne.estaVivo()) {
+                naveEne.comprobarColisionDisparos(naveAmiga);
+            }
+        }
+    }
+
+    public void comprobarSiMeHanDado(DisparoAmi disparoAmi){
+        disparoAmi.comprobarColision(this.navesEnemigas);
+    }
+
+    public void comprobarColisionesFisicas(NaveAmi naveAmiga){
+        for (NaveEne naveEne :navesEnemigas){
+            if (naveEne.estaVivo() && naveEne.colision(naveAmiga)) {
+                naveEne.setEstado(Ovni.Estado.MUERTO);
+                naveAmiga.setVidas(naveAmiga.getVidas() - 1);
+            }
+        }
+    }
+
+    public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        for (NaveEne naveEne :navesEnemigas){
+            if (naveEne.estaVivo()) {
+                naveEne.pintar(batch, galeriaImagenes);
             }
         }
     }

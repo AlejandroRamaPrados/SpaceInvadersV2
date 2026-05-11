@@ -1,5 +1,10 @@
 package com.politecnicomalaga.sp.model;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import java.util.Map;
+
 public class DisparoEne extends Disparo{
     //No hay atributos nuevos, por lo tanto, tampoco getters ni setters nuevos
     //Constructor
@@ -26,5 +31,9 @@ public class DisparoEne extends Disparo{
             return true;
         }
         return false;
+    }
+
+    public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        batch.draw(galeriaImagenes.get(this.getTextura()),this.getX(),this.getY(), this.getWidth(), this.getHeight());
     }
 }
