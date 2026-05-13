@@ -32,7 +32,7 @@ public class NaveAmi extends Nave {
             float posY = getY() + getMitadHeight();
 
             // Creamos el disparo y lo añadimos a la lista
-            DisparoAmi nuevoDisparo = new DisparoAmi(posX, posY, getAnchoBala(), getAltoBala(), Estado.VIVO, Direccion.ARRIBA, "disparoAmi.png");
+            DisparoAmi nuevoDisparo = new DisparoAmi(posX, posY, getAnchoBala(), getAltoBala(), Estado.VIVO, Direccion.ARRIBA, "sprites/disparoAmi.png");
             misDisparos.add(nuevoDisparo);
 
         }

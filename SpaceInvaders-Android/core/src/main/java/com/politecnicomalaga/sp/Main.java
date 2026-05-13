@@ -26,16 +26,16 @@ public class Main extends ApplicationAdapter {
         batch = new SpriteBatch();
         galeriaImagenes = new HashMap<>();
 
-        image = new Texture("enemigo1.png");
-        galeriaImagenes.put("enemigo1.png",image);
-        image = new Texture("enemigo2.png");
-        galeriaImagenes.put("enemigo2.png",image);
-        image = new Texture("naveJugador.png");
-        galeriaImagenes.put("naveJugador.png",image);
-        image = new Texture("disparoAmi.png");
-        galeriaImagenes.put("disparoAmi.png", image);
-        image = new Texture("disparoEne.png");
-        galeriaImagenes.put("disparoEne.png", image);
+        image = new Texture("sprites/enemigo1.png");
+        galeriaImagenes.put("sprites/enemigo1.png",image);
+        image = new Texture("sprites/enemigo2.png");
+        galeriaImagenes.put("sprites/enemigo2.png",image);
+        image = new Texture("sprites/naveJugador.png");
+        galeriaImagenes.put("sprites/naveJugador.png",image);
+        image = new Texture("sprites/disparoAmi.png");
+        galeriaImagenes.put("sprites/disparoAmi.png", image);
+        image = new Texture("sprites/disparoEne.png");
+        galeriaImagenes.put("sprites/disparoEne.png", image);
 
         anchoPantalla = Gdx.graphics.getWidth();
         altoPantalla = Gdx.graphics.getHeight();

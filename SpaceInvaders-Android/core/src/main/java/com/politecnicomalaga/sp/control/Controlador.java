@@ -25,13 +25,13 @@ public class Controlador {
 
     //CONSTRUCTOR
     private Controlador() {
-        naveAmiga = new NaveAmi(300,0,60,60, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,"naveJugador.png",1,120,15,30,8);
+        naveAmiga = new NaveAmi(300,0,60,60, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,"sprites/naveJugador.png",1,120,15,30,8);
         velocidadNave = 1f;
         contadorTiempoAmigo=0;
         getContadorTiempoEnemigo=0;
         cadenciaAmiga= 180;
         cadenciaEnemiga=180;
-        batallon=new Batallon(Gdx.graphics.getWidth()%2,Gdx.graphics.getHeight()-40,10, 50,40, Ovni.Estado.VIVO, Ovni.Direccion.DERECHA, "enemigo1.png",1,180,5,30,1,7,10,0.3f);
+        batallon=new Batallon(Gdx.graphics.getWidth()%2,Gdx.graphics.getHeight()-40,10, 50,40, Ovni.Estado.VIVO, Ovni.Direccion.DERECHA, "sprites/enemigo1.png",1,180,5,30,1,7,10,0.3f);
         jugando=true;
     }
 
