@@ -1,5 +1,8 @@
 package com.politecnicomalaga.sp.model;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+
 public abstract class Nave extends Ovni{
 
     //Atributos
@@ -8,6 +11,7 @@ public abstract class Nave extends Ovni{
     private float anchoBala;
     private float altoBala;
     private float velocidadBala;
+    protected Sound sonidoDisparo;
     //Constructor
     public Nave(float x, float y, float width, float height, Estado estado, Direccion dir, String textura, int vidas, float cadencia, float anchoBala, float altoBala, float velocidadBala) {
         super(x, y, width, height, estado, dir, textura);
@@ -16,6 +20,9 @@ public abstract class Nave extends Ovni{
         this.anchoBala = anchoBala;
         this.altoBala = altoBala;
         this.velocidadBala = velocidadBala;
+        sonidoDisparo = Gdx.audio.newSound(
+            Gdx.files.internal("sounds/shoot.wav")
+        );
     }
     //Getters y Setters
     public int getVidas() {

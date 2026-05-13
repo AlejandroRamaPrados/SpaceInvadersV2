@@ -44,6 +44,7 @@ public class NaveEne extends Nave{
                 // Creamos el disparo y lo añadimos a la lista
                 DisparoEne nuevoDisparo = new DisparoEne(posX, posY, getAnchoBala(), getAltoBala(), Estado.VIVO, Direccion.ABAJO, "sprites/disparoEne.png");
                 misDisparos.add(nuevoDisparo);
+                sonidoDisparo.play(0.1f);
             }
         }
     }
