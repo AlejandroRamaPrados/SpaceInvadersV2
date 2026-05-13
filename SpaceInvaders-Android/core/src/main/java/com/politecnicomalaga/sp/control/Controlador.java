@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.politecnicomalaga.sp.model.Batallon;
 import com.politecnicomalaga.sp.model.DisparoAmi;
 import com.politecnicomalaga.sp.model.DisparoEne;
+import com.politecnicomalaga.sp.model.ElementoFondo;
 import com.politecnicomalaga.sp.model.Escuadron;
 import com.politecnicomalaga.sp.model.NaveAmi;
 import com.politecnicomalaga.sp.model.NaveEne;
 import com.politecnicomalaga.sp.model.Ovni;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ public class Controlador {
     private final int cadenciaAmiga,cadenciaEnemiga;
     private int contadorTiempoAmigo, getContadorTiempoEnemigo;
     private Batallon batallon;
+    private List<ElementoFondo> fondo;
     private boolean jugando;
 
     //CONSTRUCTOR
@@ -33,6 +36,18 @@ public class Controlador {
         cadenciaEnemiga=180;
         batallon=new Batallon(Gdx.graphics.getWidth()%2,Gdx.graphics.getHeight()-40,10, 50,40, Ovni.Estado.VIVO, Ovni.Direccion.DERECHA, "enemigo1.png",1,180,5,30,1,7,10,0.3f);
         jugando=true;
+
+        fondo = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            fondo.add(new ElementoFondo((float)Math.random()*800,(float)Math.random()*600,4,4,"estrella.png",0.5f));
+        }
+        fondo.add(new ElementoFondo((float)Math.random()*800,200,100,100,"planet09.png",0.3f));
+        fondo.add(new ElementoFondo((float)Math.random()*800,500,140,140,"planet08.png",0.4f));
+        fondo.add(new ElementoFondo((float)Math.random()*800,800,120,120,"planet07.png",0.2f));
+
+
+
+
     }
 
     //Otros métodos
@@ -46,6 +61,11 @@ public class Controlador {
         cambiarSentidoNaveAmiga(x);
     }
     public void simulaMundo(float anchoPantalla, float altoPantalla){
+        //Actualizar fondo
+        for (ElementoFondo elementoFondo: fondo){
+            elementoFondo.actualizar(altoPantalla, anchoPantalla);
+        }
+
         //Comprobar si he muerto
         jugando = naveAmiga.estaVivo() && batallon.tieneTropas();
 
@@ -91,6 +111,9 @@ public class Controlador {
     }
 
     public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        for (ElementoFondo elementoFondo: fondo){
+            elementoFondo.pintar(batch, galeriaImagenes);
+        }
         naveAmiga.pintar(batch, galeriaImagenes);
         batallon.pintar(batch, galeriaImagenes);
     }
