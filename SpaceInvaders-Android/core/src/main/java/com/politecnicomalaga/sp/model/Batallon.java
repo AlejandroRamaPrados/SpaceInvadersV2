@@ -14,27 +14,75 @@ public class Batallon {
 
     //Constructor
     //Con todos los parámetros necesarios para inicializar
-    public Batallon(float xInicial, float yInicial, float espacioVertical, float width, float height,
-                    Ovni.Estado estado, Ovni.Direccion direccionActual, String textura, int vidas, float cadencia,
-                    float anchoBala, float altoBala, float velocidadBala, int probabilidadDisparo, float espacioEntreNaves, float velocidad) {
+    public Batallon(float xInicial, float yInicial, float espacioVertical,
+                    float width, float height,
+                    Ovni.Estado estado,
+                    Ovni.Direccion direccionActual,
+                    String texturaNormal,
+                    String texturaTanque,
+                    int vidasNormal,
+                    int vidasTanque,
+                    float cadencia,
+                    float anchoBala,
+                    float altoBala,
+                    float velocidadBala,
+                    int probabilidadDisparoNormal,
+                    int probabilidadDisparoTanque,
+                    float espacioEntreNaves,
+                    float velocidad) {
         this.velocidad = velocidad;
         this.direccionActual = direccionActual;
         this.escuadrones = new Escuadron[4]; //Inicializamos el número de escuadrones 4.
 
         //Cargamos los escuadrones con nuestro método load
         loadEscuadrones(xInicial, yInicial, espacioVertical, width, height,
-            estado, direccionActual, textura, vidas, cadencia, anchoBala, altoBala, velocidadBala,
-            probabilidadDisparo, espacioEntreNaves);
+            estado, direccionActual, texturaNormal,texturaTanque, vidasNormal,vidasTanque, cadencia, anchoBala, altoBala, velocidadBala,
+            probabilidadDisparoNormal,probabilidadDisparoTanque, espacioEntreNaves);
     }
 
     // Método load, en filas
-    private void loadEscuadrones(float x, float y, float espacioVertical, float width, float height,
-                                 Ovni.Estado estado, Ovni.Direccion dir, String textura, int vidas, float cadencia,
-                                 float anchoBala, float altoBala, float velocidadBala, int probabilidadDisparo, float espacioEntreNaves) {
+    private void loadEscuadrones(float x, float y, float espacioVertical,
+                                 float width, float height,
+                                 Ovni.Estado estado,
+                                 Ovni.Direccion dir,
+                                 String texturaNormal,
+                                 String texturaTanque,
+                                 int vidasNormal,
+                                 int vidasTanque,
+                                 float cadencia,
+                                 float anchoBala,
+                                 float altoBala,
+                                 float velocidadBala,
+                                 int probabilidadDisparoNormal,
+                                 int probabilidadDisparoTanque,
+                                 float espacioEntreNaves) {
 
         for (int i = 0; i < this.escuadrones.length; i++) {
+
             float yEscuadron = y - (i * (height + espacioVertical));
-            this.escuadrones[i] = new Escuadron(x, yEscuadron, width, height, estado, dir, textura, vidas, cadencia, anchoBala, altoBala, velocidadBala, probabilidadDisparo, espacioEntreNaves);
+
+            boolean esTanque = (i >= 2); // últimos 2 son tanques
+
+            String textura = esTanque ? texturaTanque : texturaNormal;
+            int vidas = esTanque ? vidasTanque : vidasNormal;
+            int probDisparo = esTanque ? probabilidadDisparoTanque : probabilidadDisparoNormal;
+
+            this.escuadrones[i] = new Escuadron(
+                x,
+                yEscuadron,
+                width,
+                height,
+                estado,
+                dir,
+                textura,
+                vidas,
+                cadencia,
+                anchoBala,
+                altoBala,
+                velocidadBala,
+                probDisparo,
+                espacioEntreNaves
+            );
         }
     }
 
