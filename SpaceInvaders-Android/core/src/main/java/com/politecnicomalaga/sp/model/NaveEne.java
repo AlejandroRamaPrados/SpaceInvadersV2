@@ -1,5 +1,6 @@
 package com.politecnicomalaga.sp.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -42,8 +43,9 @@ public class NaveEne extends Nave{
                 float posY = getY() - getMitadHeight();
 
                 // Creamos el disparo y lo añadimos a la lista
-                DisparoEne nuevoDisparo = new DisparoEne(posX, posY, getAnchoBala(), getAltoBala(), Estado.VIVO, Direccion.ABAJO, "disparoEne.png");
+                DisparoEne nuevoDisparo = new DisparoEne(posX, posY, getAnchoBala(), getAltoBala(), Estado.VIVO, Direccion.ABAJO, "sprites/disparoEne.png");
                 misDisparos.add(nuevoDisparo);
+                sonidoDisparo.play(0.1f);
             }
         }
     }

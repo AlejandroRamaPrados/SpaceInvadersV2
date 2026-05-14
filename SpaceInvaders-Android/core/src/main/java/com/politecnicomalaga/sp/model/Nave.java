@@ -1,5 +1,8 @@
 package com.politecnicomalaga.sp.model;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+
 public abstract class Nave extends Ovni{
 
     //Atributos
@@ -8,6 +11,8 @@ public abstract class Nave extends Ovni{
     private float anchoBala;
     private float altoBala;
     private float velocidadBala;
+    protected Sound sonidoDisparo;
+    protected Sound sonidoMuerte;
     //Constructor
     public Nave(float x, float y, float width, float height, Estado estado, Direccion dir, String textura, int vidas, float cadencia, float anchoBala, float altoBala, float velocidadBala) {
         super(x, y, width, height, estado, dir, textura);
@@ -16,6 +21,12 @@ public abstract class Nave extends Ovni{
         this.anchoBala = anchoBala;
         this.altoBala = altoBala;
         this.velocidadBala = velocidadBala;
+        sonidoDisparo = Gdx.audio.newSound(
+            Gdx.files.internal("sounds/shoot.wav")
+        );
+        sonidoMuerte = Gdx.audio.newSound(
+            Gdx.files.internal("sounds/enemydeath.wav")
+        );
     }
     //Getters y Setters
     public int getVidas() {
@@ -57,6 +68,7 @@ public abstract class Nave extends Ovni{
             if (this.vidas <= 0) {
                 this.vidas = 0; // // Solo procesamos el daño si no está muerto, Evitamos vidas negativas que puedan romper algo en el controlador
                 this.setEstado(Estado.MUERTO);
+                sonidoMuerte.play();
             }
         }
     }

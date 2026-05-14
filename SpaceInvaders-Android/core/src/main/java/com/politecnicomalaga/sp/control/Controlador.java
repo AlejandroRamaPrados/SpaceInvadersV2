@@ -1,6 +1,7 @@
 package com.politecnicomalaga.sp.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.politecnicomalaga.sp.model.Batallon;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Controlador {
+    private Music musica;
     private static Controlador miSingle;
     private NaveAmi naveAmiga;
     private final float velocidadNave;
@@ -28,13 +30,13 @@ public class Controlador {
 
     //CONSTRUCTOR
     private Controlador() {
-        naveAmiga = new NaveAmi(300,0,60,60, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,"naveJugador.png",1,120,15,30,8);
+        naveAmiga = new NaveAmi(300,0,60,60, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,"sprites/naveJugador.png",1,120,15,30,8);
         velocidadNave = 1f;
         contadorTiempoAmigo=0;
         getContadorTiempoEnemigo=0;
         cadenciaAmiga= 180;
         cadenciaEnemiga=180;
-        batallon=new Batallon(Gdx.graphics.getWidth()%2,Gdx.graphics.getHeight()-40,10, 50,40, Ovni.Estado.VIVO, Ovni.Direccion.DERECHA, "enemigo1.png",1,180,5,30,1,7,10,0.3f);
+        batallon=new Batallon(Gdx.graphics.getWidth()%2,Gdx.graphics.getHeight()-40,10, 50,40, Ovni.Estado.VIVO, Ovni.Direccion.DERECHA, "sprites/enemigo1.png",1,180,5,30,1,7,10,0.3f);
         jugando=true;
 
         fondo = new ArrayList<>();
@@ -48,6 +50,11 @@ public class Controlador {
 
 
 
+        musica = Gdx.audio.newMusic(
+            Gdx.files.internal("sounds/main_music1.mp3")
+        );
+        musica.setLooping(true);
+        musica.setVolume(0.2f);
     }
 
     //Otros métodos
@@ -70,6 +77,7 @@ public class Controlador {
         jugando = naveAmiga.estaVivo() && batallon.tieneTropas();
 
         if (jugando){
+            musica.play();
             //Comprobar si he ganado
             jugando=!comprobarSiGano(batallon);
 
@@ -108,6 +116,7 @@ public class Controlador {
             naveAmiga.gestionarMisDisparos(altoPantalla);
             batallon.gestionarDisparos(0);
         }
+        if (!jugando) musica.stop();
     }
 
     public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){

@@ -1,5 +1,7 @@
 package com.politecnicomalaga.sp.model;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -9,6 +11,7 @@ import java.util.Map;
 public class NaveAmi extends Nave {
     //Atributos
     private ArrayList<DisparoAmi> misDisparos; //Para el crud de disparos
+
     //Constructor
     public NaveAmi(float x, float y, float width, float height, Estado estado, Direccion dir, String textura, int vidas, float cadencia, float anchoBala, float altoBala, float velocidadBala) {
         super(x, y, width, height, estado, dir, textura, vidas, cadencia, anchoBala, altoBala, velocidadBala);
@@ -32,9 +35,9 @@ public class NaveAmi extends Nave {
             float posY = getY() + getMitadHeight();
 
             // Creamos el disparo y lo añadimos a la lista
-            DisparoAmi nuevoDisparo = new DisparoAmi(posX, posY, getAnchoBala(), getAltoBala(), Estado.VIVO, Direccion.ARRIBA, "disparoAmi.png");
+            DisparoAmi nuevoDisparo = new DisparoAmi(posX, posY, getAnchoBala(), getAltoBala(), Estado.VIVO, Direccion.ARRIBA, "sprites/disparoAmi.png");
             misDisparos.add(nuevoDisparo);
-
+            sonidoDisparo.play(0.1f);
         }
     }
 
