@@ -41,7 +41,7 @@ public class Controlador {
         cadenciaAmiga= 180;
         cadenciaEnemiga=180;
         batallon=new Batallon(Gdx.graphics.getWidth()%2,
-            Gdx.graphics.getHeight()-100,
+            Gdx.graphics.getHeight()-40,
             10,
             50,
             40,
