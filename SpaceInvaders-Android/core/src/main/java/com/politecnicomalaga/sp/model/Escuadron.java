@@ -97,8 +97,8 @@ public class Escuadron {
         }
     }
 
-    public void comprobarSiMeHanDado(DisparoAmi disparoAmi){
-        disparoAmi.comprobarColision(this.navesEnemigas);
+    public boolean comprobarSiMeHanDado(DisparoAmi disparoAmi){
+        return disparoAmi.comprobarColision(this.navesEnemigas);
     }
 
     public void comprobarColisionesFisicas(NaveAmi naveAmiga){

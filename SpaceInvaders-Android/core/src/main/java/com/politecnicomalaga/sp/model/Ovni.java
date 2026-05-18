@@ -85,19 +85,10 @@ public class Ovni {
     //Métodos
     //Comprobar la colisión con otra nave
     public boolean colision (Ovni otraNave){
-        return
-            colisionW(this.x, this.mitadWidth, otraNave.getX(), otraNave.getMitadWidth()) &&
-            colisionH(this.y, this.mitadHeight, otraNave.getY(), otraNave.getMitadHeight());
-    }
-
-    private boolean colisionW(float x1,float mitadW1, float x2,float mitadW2){
-       if (Math.abs(x1-x2)<=mitadW1+mitadW2) return true;
-       return false;
-    }
-
-    private boolean colisionH(float y1,float mitadH1,float y2,float mitadH2){
-        if (Math.abs(y1-y2)<=mitadH1+mitadH2) return true;
-        return false;
+        return this.x < otraNave.getX() + otraNave.getWidth() &&
+                this.x + this.width > otraNave.getX() &&
+                this.y < otraNave.getY() + otraNave.getHeight() &&
+                this.y + this.height > otraNave.getY();
     }
 
     public void mover(Direccion direccion, float velocidad){

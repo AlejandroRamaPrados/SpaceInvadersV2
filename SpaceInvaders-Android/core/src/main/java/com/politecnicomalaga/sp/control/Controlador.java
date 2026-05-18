@@ -26,18 +26,22 @@ public class Controlador {
     private int contadorTiempoAmigo, getContadorTiempoEnemigo;
     private Batallon batallon;
     private List<ElementoFondo> fondo;
+
+    private int puntuacion;
+
     private boolean jugando;
 
     //CONSTRUCTOR
     private Controlador() {
-        naveAmiga = new NaveAmi(300,0,60,60, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,"sprites/naveJugador.png",1,120,15,30,8);
+        naveAmiga = new NaveAmi(300,0,60,60, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,"sprites/naveJugador.png",3,120,15,30,8);
         velocidadNave = 1f;
         contadorTiempoAmigo=0;
+        puntuacion=0;
         getContadorTiempoEnemigo=0;
         cadenciaAmiga= 180;
         cadenciaEnemiga=180;
         batallon=new Batallon(Gdx.graphics.getWidth()%2,
-            Gdx.graphics.getHeight()-40,
+            Gdx.graphics.getHeight()-100,
             10,
             50,
             40,
@@ -143,6 +147,10 @@ public class Controlador {
         }
         naveAmiga.pintar(batch, galeriaImagenes);
         batallon.pintar(batch, galeriaImagenes);
+
+        pintarPuntuacion(batch, galeriaImagenes);
+        pintarVida(batch, galeriaImagenes);
+
     }
 
     public void cambiarSentidoNaveAmiga (float x){
@@ -161,7 +169,7 @@ public class Controlador {
     }
     public  void hematado(Batallon batallon, List<DisparoAmi> disparoAmis){
         for (DisparoAmi disparoAmi: disparoAmis){
-            batallon.comprobarSiMeHanDado(disparoAmi);
+            if (batallon.comprobarSiMeHanDado(disparoAmi)) puntuacion+=10+ (int)(Math.random()*15);
         }
     }
     public void meHanTocado(Batallon batallon, NaveAmi naveAmiga) {
@@ -169,5 +177,19 @@ public class Controlador {
     }
     public boolean comprobarSiGano(Batallon batallon){
         return !batallon.hayNavesVivas();
+    }
+
+    public void pintarVida(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        for (int i = 0; i < naveAmiga.getVidas(); i++) {
+            batch.draw(galeriaImagenes.get("vida.png"),20+(i*35),Gdx.graphics.getHeight()-70,60,60);
+        }
+    }
+    public void pintarPuntuacion(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        String puntuacionString = String.valueOf(puntuacion);
+        float xInicial = Gdx.graphics.getWidth()-puntuacionString.length()*17-10;
+        for (int i = 0; i < puntuacionString.length(); i++) {
+            char digito = puntuacionString.charAt(i);
+            batch.draw(galeriaImagenes.get("Number"+digito+".png"),xInicial + (i*22), Gdx.graphics.getHeight()-45,15,15);
+        }
     }
 }

@@ -36,6 +36,10 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes.put("sprites/disparoAmi.png", image);
         image = new Texture("sprites/disparoEne.png");
         galeriaImagenes.put("sprites/disparoEne.png", image);
+        image = new Texture("sprites/vida.png");
+        galeriaImagenes.put("vida.png", image);
+
+
         image= new Texture("planets/estrella.png");
         galeriaImagenes.put("estrella.png", image);
         image= new Texture("planets/planet00.png");
@@ -60,6 +64,29 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes.put("planet09.png", image);
         image= new Texture("planets/planet09.png");
         galeriaImagenes.put("planet09.png", image);
+
+        image = new Texture("numbers/Number0.png");
+        galeriaImagenes.put("Number0.png", image);
+        image = new Texture("numbers/Number1.png");
+        galeriaImagenes.put("Number1.png", image);
+        image = new Texture("numbers/Number2.png");
+        galeriaImagenes.put("Number2.png", image);
+        image = new Texture("numbers/Number3.png");
+        galeriaImagenes.put("Number3.png", image);
+        image = new Texture("numbers/Number4.png");
+        galeriaImagenes.put("Number4.png", image);
+        image = new Texture("numbers/Number5.png");
+        galeriaImagenes.put("Number5.png", image);
+        image = new Texture("numbers/Number6.png");
+        galeriaImagenes.put("Number6.png", image);
+        image = new Texture("numbers/Number7.png");
+        galeriaImagenes.put("Number7.png", image);
+        image = new Texture("numbers/Number8.png");
+        galeriaImagenes.put("Number8.png", image);
+        image = new Texture("numbers/Number9.png");
+        galeriaImagenes.put("Number9.png", image);
+
+
 
 
 

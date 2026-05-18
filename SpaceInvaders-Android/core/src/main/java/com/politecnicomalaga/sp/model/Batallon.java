@@ -174,10 +174,11 @@ public class Batallon {
             esc.comprobarColisionesDisparo(naveAmiga);
         }
     }
-    public void comprobarSiMeHanDado(DisparoAmi disparoAmi){
+    public boolean comprobarSiMeHanDado(DisparoAmi disparoAmi){
         for (Escuadron esc : escuadrones){
-            esc.comprobarSiMeHanDado(disparoAmi);
+            if (esc.comprobarSiMeHanDado(disparoAmi)) return true;
         }
+        return false;
     }
 
     public void comprobarColisionesFisicas(NaveAmi naveAmiga){
