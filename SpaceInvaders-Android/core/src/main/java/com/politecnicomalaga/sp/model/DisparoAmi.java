@@ -21,7 +21,7 @@ public class DisparoAmi extends Disparo{
         }
     }
     //Comprobamos si el disparo ha colisionado con alguna nave enemiga
-    public boolean comprobarColision(NaveEne [] enemigos) {
+    public boolean comprobarColision(NaveEne[] enemigos) {
         // Si ya impactó (y está pendiente de borrar) evitamos "doblekill"
         // Y evitamos que una bala muerta siga matando mientras espera ser borrada
         if (this.getEstado() == Estado.MUERTO) return false;
@@ -29,9 +29,9 @@ public class DisparoAmi extends Disparo{
         //Recorre todos los enemigos para ver si han tocado el disparo
         for (NaveEne enemigo : enemigos) {
             if (enemigo.estaVivo() && this.colision(enemigo)) {
-                enemigo.recibirDisparo(); //Tocar recibir disparos según la vida de la nave enemiga "1"
+                boolean muerto = enemigo.recibirDisparo(); //Tocar recibir disparos según la vida de la nave enemiga "1"
                 this.setEstado(Estado.MUERTO);
-                return true;
+                return muerto;
             }
         }
         return false;

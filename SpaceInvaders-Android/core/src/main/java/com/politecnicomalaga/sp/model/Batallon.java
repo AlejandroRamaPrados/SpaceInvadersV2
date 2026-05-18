@@ -61,7 +61,7 @@ public class Batallon {
 
             float yEscuadron = y - (i * (height + espacioVertical));
 
-            boolean esTanque = (i >= 2); // últimos 2 son tanques
+            boolean esTanque = (i >= 2);
 
             String textura = esTanque ? texturaTanque : texturaNormal;
             int vidas = esTanque ? vidasTanque : vidasNormal;
