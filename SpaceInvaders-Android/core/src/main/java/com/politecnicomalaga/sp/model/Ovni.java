@@ -1,5 +1,7 @@
 package com.politecnicomalaga.sp.model;
 
+import com.badlogic.gdx.Gdx;
+
 public class Ovni {
     //Atributos
     private float x,y;
@@ -92,21 +94,22 @@ public class Ovni {
     }
 
     public void mover(Direccion direccion, float velocidad){
+        float espacioRecorrido = velocidad * Gdx.graphics.getDeltaTime();
         switch (direccion){
             case ABAJO:
-                this.setY(this.y-velocidad);
+                this.setY(this.y-espacioRecorrido);
                 break;
 
             case ARRIBA:
-                this.setY(this.y+velocidad);
+                this.setY(this.y+espacioRecorrido);
                 break;
 
             case DERECHA:
-                this.setX(this.x+velocidad);
+                this.setX(this.x+espacioRecorrido);
                 break;
 
             case IZQUIERDA:
-                this.setX(this.x-velocidad);
+                this.setX(this.x-espacioRecorrido);
                 break;
         }
     }

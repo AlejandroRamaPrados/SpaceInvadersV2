@@ -103,16 +103,16 @@ public class Main extends ApplicationAdapter {
         if(Gdx.input.justTouched()){
             x= Gdx.input.getX();
             y=Gdx.input.getY();
-            Controlador.getInstance().click(x,y);
+            Controlador.getInstance(anchoPantalla, altoPantalla).click(x,y);
         }
 
         //Control de estado
-        Controlador.getInstance().simulaMundo(anchoPantalla,altoPantalla);
+        Controlador.getInstance(anchoPantalla, altoPantalla).simulaMundo(Gdx.graphics.getDeltaTime());
 
 
         //Pintar el mundo
         batch.begin();
-        Controlador.getInstance().pintar(batch, galeriaImagenes);
+        Controlador.getInstance(anchoPantalla, altoPantalla).pintar(batch, galeriaImagenes);
         batch.end();
     }
 

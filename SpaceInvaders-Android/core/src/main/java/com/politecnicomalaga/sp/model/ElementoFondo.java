@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.naming.ldap.Control;
 
 public class ElementoFondo extends Ovni{
-    float velocidad;
+    private float velocidad;
     public ElementoFondo(float x, float y, float width, float height, String textura, float velocidad) {
         super(x, y, width, height, Estado.VIVO, Direccion.ABAJO, textura);
         this.velocidad = velocidad;

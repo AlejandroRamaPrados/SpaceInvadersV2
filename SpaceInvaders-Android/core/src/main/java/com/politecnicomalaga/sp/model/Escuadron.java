@@ -60,7 +60,9 @@ public class Escuadron {
         for (NaveEne naveEne :navesEnemigas) {
             //Aqui solo bajan las naves que estén vivas por eso la comprobación
             if (naveEne.estaVivo()) {
-                naveEne.mover(Ovni.Direccion.ABAJO, cuantoBaja);
+                // Modificamos la Y directamente porque esto es un salto instantáneo
+                // y no un movimiento continuo que deba depender del deltaTime.
+                naveEne.setY(naveEne.getY() - cuantoBaja);
             }
         }
     }

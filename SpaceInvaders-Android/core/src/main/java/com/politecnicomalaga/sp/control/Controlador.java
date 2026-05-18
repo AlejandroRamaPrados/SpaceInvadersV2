@@ -22,55 +22,57 @@ public class Controlador {
     private static Controlador miSingle;
     private NaveAmi naveAmiga;
     private final float velocidadNave;
-    private final int cadenciaAmiga,cadenciaEnemiga;
-    private int contadorTiempoAmigo, getContadorTiempoEnemigo;
+    private final float cadenciaAmiga,cadenciaEnemiga;
+    private float contadorTiempoAmigo, getContadorTiempoEnemigo;
     private Batallon batallon;
     private List<ElementoFondo> fondo;
-
     private int puntuacion;
-
     private boolean jugando;
 
+    // Variables de control responsive
+    private final float velBase; // Velocidad adaptada al ancho
+    private final float anchoPantalla,altoPantalla;
+
     //CONSTRUCTOR
-    private Controlador() {
-        naveAmiga = new NaveAmi(300,0,60,60, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,"sprites/naveJugador.png",3,120,15,30,8);
-        velocidadNave = 1f;
+    private Controlador(float anchoPantalla, float altoPantalla) {
+        //Inicializamos variables de control responsive
+        this.anchoPantalla = anchoPantalla;
+        this.altoPantalla = altoPantalla;
+        velBase = anchoPantalla*0.2f;
+
+        //Definición de unidad de medida (1% del ancho)
+        float uW = anchoPantalla / 100f;
+        float uH = altoPantalla / 100f;
+
+        //Inicialización de contadores
         contadorTiempoAmigo=0;
-        puntuacion=0;
         getContadorTiempoEnemigo=0;
-        cadenciaAmiga= 180;
-        cadenciaEnemiga=180;
-        batallon=new Batallon(Gdx.graphics.getWidth()%2,
-            Gdx.graphics.getHeight()-40,
-            10,
-            50,
-            40,
-            Ovni.Estado.VIVO,
-            Ovni.Direccion.DERECHA,
-            "sprites/enemigo1.png",
-            "sprites/enemigo2.png",
-            1,
-            2,
-            180,
-            5,
-            30,
-            1,
-            7,
-            5,
-            10,
-            0.3f);
+        puntuacion=0;
+        cadenciaAmiga= 1.5f; //Ahora las cadencais se miden en segundos en vez de frames
+        cadenciaEnemiga=2.0f;
+
+        //Inicialización de elementos
+        float tamNave = uW *6f;
+        naveAmiga = new NaveAmi(anchoPantalla/2 - tamNave/2, 0, tamNave, tamNave, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,
+                                "sprites/naveJugador.png",3,120,uW*1.5f,uW*5,0.2f*anchoPantalla);
+        velocidadNave = velBase;
+
+        float tamEnemigo = uW*5f;
+        batallon=new Batallon(anchoPantalla%2, altoPantalla-tamEnemigo*1.5f, uH*2,
+            tamEnemigo, tamEnemigo*0.8f, Ovni.Estado.VIVO, Ovni.Direccion.DERECHA,
+            "sprites/enemigo1.png", "sprites/enemigo2.png", 1,
+            2, 180, uW*1.5f, uH*6, 0.1f*anchoPantalla, 7,
+            5, 10, 0.06f*anchoPantalla);
+
         jugando=true;
 
         fondo = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            fondo.add(new ElementoFondo((float)Math.random()*800,(float)Math.random()*600,4,4,"estrella.png",0.5f));
+            fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,(float)Math.random()*altoPantalla,uW,uW,"estrella.png",altoPantalla*0.001f));
         }
-        fondo.add(new ElementoFondo((float)Math.random()*800,200,100,100,"planet09.png",0.3f));
-        fondo.add(new ElementoFondo((float)Math.random()*800,500,140,140,"planet08.png",0.4f));
-        fondo.add(new ElementoFondo((float)Math.random()*800,800,120,120,"planet07.png",0.2f));
-
-
-
+        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.2f,uW*25,uW*25,"planet09.png",altoPantalla*0.003f));
+        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.5f,uW*35,uW*35,"planet08.png",altoPantalla*0.002f));
+        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.8f,uW*30,uW*30,"planet07.png",altoPantalla*0.004f));
 
         musica = Gdx.audio.newMusic(
             Gdx.files.internal("sounds/main_music1.mp3")
@@ -80,16 +82,16 @@ public class Controlador {
     }
 
     //Otros métodos
-    public static Controlador getInstance(){
+    public static Controlador getInstance(float anchoPantalla, float altoPantalla){
         if (miSingle == null){
-            miSingle= new Controlador();
+            miSingle= new Controlador(anchoPantalla, altoPantalla);
         }
         return miSingle;
     }
     public void click (float x, float y){
         cambiarSentidoNaveAmiga(x);
     }
-    public void simulaMundo(float anchoPantalla, float altoPantalla){
+    public void simulaMundo(float delta){
         //Actualizar fondo
         for (ElementoFondo elementoFondo: fondo){
             elementoFondo.actualizar(altoPantalla, anchoPantalla);
@@ -104,17 +106,17 @@ public class Controlador {
             jugando=!comprobarSiGano(batallon);
 
             //disparo yo?
-            contadorTiempoAmigo++;
-            if (contadorTiempoAmigo==cadenciaAmiga){
+            contadorTiempoAmigo+=delta;
+            if (contadorTiempoAmigo>=cadenciaAmiga){
                 naveAmiga.disparar();
-                contadorTiempoAmigo=0;
+                contadorTiempoAmigo=0f;
             }
 
             //disparan los enemigos?
-            getContadorTiempoEnemigo++;
-            if (getContadorTiempoEnemigo==cadenciaEnemiga){
+            getContadorTiempoEnemigo+=delta;
+            if (getContadorTiempoEnemigo>=cadenciaEnemiga){
                 batallon.disparar();
-                getContadorTiempoEnemigo=0;
+                getContadorTiempoEnemigo=0f;
             }
 
             //Colisiones
@@ -132,7 +134,7 @@ public class Controlador {
                 naveAmiga.setDir(Ovni.Direccion.NOMOVER);
             }
             naveAmiga.mover(naveAmiga.getDir(),velocidadNave);
-            batallon.mover(anchoPantalla,altoPantalla,20);
+            batallon.mover(anchoPantalla,altoPantalla,(altoPantalla/100)*5f*0.8f);
 
             //gestiono todos los disparos
             naveAmiga.gestionarMisDisparos(altoPantalla);
@@ -180,16 +182,20 @@ public class Controlador {
     }
 
     public void pintarVida(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        float tamIcono = anchoPantalla * 0.1f;
+        float margen = anchoPantalla * 0.0001f;
         for (int i = 0; i < naveAmiga.getVidas(); i++) {
-            batch.draw(galeriaImagenes.get("vida.png"),20+(i*35),Gdx.graphics.getHeight()-70,60,60);
+            batch.draw(galeriaImagenes.get("vida.png"),margen +(i*tamIcono/2),altoPantalla-tamIcono-margen,tamIcono,tamIcono);
         }
     }
     public void pintarPuntuacion(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
         String puntuacionString = String.valueOf(puntuacion);
-        float xInicial = Gdx.graphics.getWidth()-puntuacionString.length()*17-10;
+        float tamNum = anchoPantalla * 0.04f;
+        float margen = anchoPantalla * 0.02f;
+        float xInicial = anchoPantalla - (puntuacionString.length()*tamNum)-margen;
         for (int i = 0; i < puntuacionString.length(); i++) {
             char digito = puntuacionString.charAt(i);
-            batch.draw(galeriaImagenes.get("Number"+digito+".png"),xInicial + (i*22), Gdx.graphics.getHeight()-45,15,15);
+            batch.draw(galeriaImagenes.get("Number"+digito+".png"),xInicial + (i*tamNum), altoPantalla-tamNum-margen,tamNum,tamNum);
         }
     }
 }
