@@ -15,15 +15,14 @@ public class ElementoFondo extends Ovni{
         this.velocidad = velocidad;
     }
 
-    public void actualizar(float altoPantalla, float anchoPantalla){
-        this.setY(this.getY()-velocidad); //Se mueve hacia abajo
-        if(this.getY() < -this.getHeight()){ //Al poner que sea menor que su negativo hace que no se corte la imagen al llegar al fondo suino cuando ya sea haya ido completamente
-            //Si sale por abajo reaparece arriba con un X aleatoria
+    public void actualizar(float delta, float altoPantalla, float anchoPantalla){
+        this.setY(this.getY() - (velocidad * delta)); //Se mueve hacia abajo usando delta para ser responsive
+        if(this.getY() < -this.getHeight()){
             if (!this.getTextura().equals("estrella.png")){
                 int planeta = (int)(Math.random()*10);
                 this.setTextura("planet0"+planeta+".png");
             }
-            this.setY(altoPantalla+this.getHeight()); //lo devolvemos al inicio
+            this.setY(altoPantalla+this.getHeight());
             this.setX((float)Math.random()* anchoPantalla);
         }
     }

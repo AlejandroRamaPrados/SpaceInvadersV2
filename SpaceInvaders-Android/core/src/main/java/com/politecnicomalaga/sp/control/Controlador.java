@@ -67,12 +67,13 @@ public class Controlador {
         jugando=true;
 
         fondo = new ArrayList<>();
+        // Velocidades ajustadas: % de pantalla por segundo (independiente de FPS)
         for (int i = 0; i < 20; i++) {
-            fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,(float)Math.random()*altoPantalla,uW,uW,"estrella.png",altoPantalla*0.001f));
+            fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,(float)Math.random()*altoPantalla,uW,uW,"estrella.png",altoPantalla*0.1f));
         }
-        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.2f,uW*25,uW*25,"planet09.png",altoPantalla*0.003f));
-        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.5f,uW*35,uW*35,"planet08.png",altoPantalla*0.002f));
-        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.8f,uW*30,uW*30,"planet07.png",altoPantalla*0.004f));
+        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.2f,uW*25,uW*25,"planet09.png",altoPantalla*0.25f));
+        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.5f,uW*35,uW*35,"planet08.png",altoPantalla*0.20f));
+        fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.8f,uW*30,uW*30,"planet07.png",altoPantalla*0.35f));
 
         musica = Gdx.audio.newMusic(
             Gdx.files.internal("sounds/main_music1.mp3")
@@ -92,9 +93,9 @@ public class Controlador {
         cambiarSentidoNaveAmiga(x);
     }
     public void simulaMundo(float delta){
-        //Actualizar fondo
+        //Actualizar fondo con delta para que sea responsive
         for (ElementoFondo elementoFondo: fondo){
-            elementoFondo.actualizar(altoPantalla, anchoPantalla);
+            elementoFondo.actualizar(delta, altoPantalla, anchoPantalla);
         }
 
         //Comprobar si he muerto
