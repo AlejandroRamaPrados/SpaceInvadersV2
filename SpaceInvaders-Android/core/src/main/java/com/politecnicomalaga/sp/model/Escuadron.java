@@ -106,6 +106,10 @@ public class Escuadron {
             if (naveEne.estaVivo() && naveEne.colision(naveAmiga)) {
                 naveEne.setEstado(Ovni.Estado.MUERTO);
                 naveAmiga.setVidas(naveAmiga.getVidas() - 1);
+                if (naveAmiga.getVidas() <= 0) {
+                    naveAmiga.setVidas(0);
+                    naveAmiga.setEstado(Ovni.Estado.MUERTO);
+                }
             }
         }
     }
