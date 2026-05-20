@@ -31,8 +31,15 @@ public class Controlador {
 
     private boolean jugando;
 
+    private float btnX, btnY, btnAncho, btnAlto;
+
+    private float btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto;
+
     //CONSTRUCTOR
+
+
     private Controlador() {
+
         naveAmiga = new NaveAmi(300,0,60,60, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER,"sprites/naveJugador.png",3,120,15,30,8);
         velocidadNave = 1f;
         contadorTiempoAmigo=0;
@@ -59,7 +66,8 @@ public class Controlador {
             5,
             10,
             0.3f);
-        jugando=true;
+
+        jugando=false; //Comienza el juego parado
 
         fondo = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
@@ -77,6 +85,18 @@ public class Controlador {
         );
         musica.setLooping(true);
         musica.setVolume(0.2f);
+
+        //BotonJugar
+        btnAncho = 250f; // Ajustad el tamaño que queráis mis patrones
+        btnAlto = 90f;
+        btnX = (Gdx.graphics.getWidth() - btnAncho) / 2f;  // Centrado en X
+        btnY = (Gdx.graphics.getHeight() - btnAlto) / 2f;  // Centrado en Y
+
+        // BotonSalir (Lo ponemos 120 píxeles más abajo que el de jugar, ajustar mas adelante)
+        btnSalirAncho = 250f;
+        btnSalirAlto = 90f;
+        btnSalirX = (Gdx.graphics.getWidth() - btnSalirAncho) / 2f;  // Centrado en X igual Jugar
+        btnSalirY = btnY - 120f;                                     // Un poco más abajo en la pantalla uwu
     }
 
     //Otros métodos
@@ -87,7 +107,28 @@ public class Controlador {
         return miSingle;
     }
     public void click (float x, float y){
-        cambiarSentidoNaveAmiga(x);
+        float yReal = Gdx.graphics.getHeight() - y;
+
+        if (!jugando) {
+            // 1. Comprobamos si pulsa el botón de JUGAR
+            if (x >= btnX && x <= (btnX + btnAncho) && yReal >= btnY && yReal <= (btnY + btnAlto)) {
+
+                System.out.println("¡Partida Iniciada!");
+                jugando = true;
+
+                btnX = -1000;
+                btnY = -1000;
+            }
+            // 2. Comprobamos si pulsa el botón de SALIR
+            else if (x >= btnSalirX && x <= (btnSalirX + btnSalirAncho) && yReal >= btnSalirY && yReal <= (btnSalirY + btnSalirAlto)) {
+
+                System.out.println("Cerrando el juego...");
+                Gdx.app.exit(); // <<< Este comando cierra la aplicación por completo
+
+            }
+        } else {
+            cambiarSentidoNaveAmiga(x);
+        }
     }
     public void simulaMundo(float anchoPantalla, float altoPantalla){
         //Actualizar fondo
@@ -95,10 +136,15 @@ public class Controlador {
             elementoFondo.actualizar(altoPantalla, anchoPantalla);
         }
 
-        //Comprobar si he muerto
-        jugando = naveAmiga.estaVivo() && batallon.tieneTropas();
-
         if (jugando){
+            jugando = naveAmiga.estaVivo() && batallon.tieneTropas();
+
+            // Si tras comprobar resulta que has muerto, salimos para que no ejecute el resto
+            if (!jugando) {
+                musica.stop();
+                return;
+            }
+
             musica.play();
             //Comprobar si he ganado
             jugando=!comprobarSiGano(batallon);
@@ -151,6 +197,12 @@ public class Controlador {
         pintarPuntuacion(batch, galeriaImagenes);
         pintarVida(batch, galeriaImagenes);
 
+        //Solo pintamos el botón si NO se está jugando todavía
+        if (!jugando) {
+            batch.draw(galeriaImagenes.get("botonComenzar"), btnX, btnY, btnAncho, btnAlto);
+
+            batch.draw(galeriaImagenes.get("botonSalir"), btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto);
+        }
     }
 
     public void cambiarSentidoNaveAmiga (float x){
