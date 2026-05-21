@@ -2,6 +2,7 @@ package com.politecnicomalaga.sp;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -100,11 +101,16 @@ public class Main extends ApplicationAdapter {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
         //Control de entrada
-        if(Gdx.input.justTouched()){
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            Controlador.getInstance(anchoPantalla,altoPantalla).cambiarSentidoNaveAmiga(0);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            Controlador.getInstance(anchoPantalla,altoPantalla).cambiarSentidoNaveAmiga(anchoPantalla);
+        } else if(Gdx.input.isTouched()){
             x= Gdx.input.getX();
             y=Gdx.input.getY();
             Controlador.getInstance(anchoPantalla, altoPantalla).click(x,y);
         }
+
 
         //Control de estado
         Controlador.getInstance(anchoPantalla, altoPantalla).simulaMundo(Gdx.graphics.getDeltaTime());

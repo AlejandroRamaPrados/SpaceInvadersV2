@@ -136,6 +136,7 @@ public class Controlador {
             }
             naveAmiga.mover(naveAmiga.getDir(),velocidadNave);
             batallon.mover(anchoPantalla,altoPantalla,(altoPantalla/100)*5f*0.8f);
+            naveAmiga.setDir(Ovni.Direccion.NOMOVER);
 
             //gestiono todos los disparos
             naveAmiga.gestionarMisDisparos(altoPantalla);
@@ -158,12 +159,11 @@ public class Controlador {
 
     public void cambiarSentidoNaveAmiga (float x){
         float naveX = naveAmiga.getX();
-        Ovni.Direccion actual = naveAmiga.getDir();
 
         if (x>naveX){
-            naveAmiga.setDir(actual== Ovni.Direccion.DERECHA ? Ovni.Direccion.NOMOVER: Ovni.Direccion.DERECHA);
+            naveAmiga.setDir(Ovni.Direccion.DERECHA);
         } else if (x< naveX) {
-            naveAmiga.setDir(actual== Ovni.Direccion.IZQUIERDA? Ovni.Direccion.NOMOVER: Ovni.Direccion.IZQUIERDA);
+            naveAmiga.setDir(Ovni.Direccion.IZQUIERDA);
         }
     }
 
