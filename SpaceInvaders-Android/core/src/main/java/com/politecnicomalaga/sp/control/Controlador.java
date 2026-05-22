@@ -188,22 +188,25 @@ public class Controlador {
     }
 
     public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
+        // El fondo siempre se pinta (esté el juego en pausa o no)
         for (ElementoFondo elementoFondo: fondo){
             elementoFondo.pintar(batch, galeriaImagenes);
         }
-        naveAmiga.pintar(batch, galeriaImagenes);
-        batallon.pintar(batch, galeriaImagenes);
 
-        pintarPuntuacion(batch, galeriaImagenes);
-        pintarVida(batch, galeriaImagenes);
-
-        //Solo pintamos el botón si NO se está jugando todavía
-        if (!jugando) {
+        // --- CAMBIO AQUÍ ---
+        // Solo pintamos los elementos del juego si estamos jugando
+        if (jugando) {
+            naveAmiga.pintar(batch, galeriaImagenes);
+            batallon.pintar(batch, galeriaImagenes);
+            pintarPuntuacion(batch, galeriaImagenes);
+            pintarVida(batch, galeriaImagenes);
+        } else {
+            // Si NO estamos jugando, pintamos los botones del menú
             batch.draw(galeriaImagenes.get("botonComenzar"), btnX, btnY, btnAncho, btnAlto);
-
             batch.draw(galeriaImagenes.get("botonSalir"), btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto);
         }
     }
+
 
     public void cambiarSentidoNaveAmiga (float x){
         float naveX = naveAmiga.getX();
