@@ -96,6 +96,12 @@ public class Main extends ApplicationAdapter {
 
         image = new Texture("textMenu/Salir.png");
         galeriaImagenes.put("botonSalir", image);
+        image = new Texture("textMenu/Ayuda.png");
+        galeriaImagenes.put("botonAjustes", image);
+        image = new Texture("textMenu/Ayuda.png");
+        galeriaImagenes.put("botonAjustes", image);
+        image = new Texture("textMenu/FondoEstrellas.png");
+        galeriaImagenes.put("fondoEstrellas", image);
 
 
 

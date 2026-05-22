@@ -34,6 +34,11 @@ public class Controlador {
     private float btnX, btnY, btnAncho, btnAlto;
 
     private float btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto;
+    private enum Pantalla { MENU, JUEGO, AJUSTES}
+    private Pantalla pantallaActual = Pantalla.MENU;
+    private float btnAjustesX, btnAjustesY, btnAjustesAncho, btnAjustesAlto;
+    private float btnVolverX, btnVolverY, btnVolverAncho, btnVolverAlto;
+
 
     //CONSTRUCTOR
 
@@ -97,6 +102,18 @@ public class Controlador {
         btnSalirAlto = 90f;
         btnSalirX = (Gdx.graphics.getWidth() - btnSalirAncho) / 2f;  // Centrado en X igual Jugar
         btnSalirY = btnY - 120f;                                     // Un poco más abajo en la pantalla uwu
+
+        // BotonAjustes (Lo ponemos 120 píxeles más abajo que el de salir, ajustar mas adelante) uwu
+        btnAjustesAncho =250f;
+        btnAjustesAlto = 90f;
+        btnAjustesX = (Gdx.graphics.getWidth() - btnAjustesAncho) / 2f;
+        btnAjustesY = btnSalirY - 120f; // Más abajo que el de salir
+
+        // Botón volver (para salir de ajustes, payaso)
+        btnVolverAncho = 200f;
+        btnVolverAlto = 70f;
+        btnVolverX = 20f; // Esquina inferior
+        btnVolverY = 20f;
     }
 
     //Otros métodos
@@ -109,24 +126,28 @@ public class Controlador {
     public void click (float x, float y){
         float yReal = Gdx.graphics.getHeight() - y;
 
-        if (!jugando) {
-            // 1. Comprobamos si pulsa el botón de JUGAR
+        if (pantallaActual == Pantalla.MENU) {
+            // Lógica de JUGAR
             if (x >= btnX && x <= (btnX + btnAncho) && yReal >= btnY && yReal <= (btnY + btnAlto)) {
-
-                System.out.println("¡Partida Iniciada!");
                 jugando = true;
-
-                btnX = -1000;
-                btnY = -1000;
+                pantallaActual = Pantalla.JUEGO;
             }
-            // 2. Comprobamos si pulsa el botón de SALIR
+            // Lógica de SALIR
             else if (x >= btnSalirX && x <= (btnSalirX + btnSalirAncho) && yReal >= btnSalirY && yReal <= (btnSalirY + btnSalirAlto)) {
-
-                System.out.println("Cerrando el juego...");
-                Gdx.app.exit(); // <<< Este comando cierra la aplicación por completo
-
+                Gdx.app.exit();
             }
-        } else {
+            // Lógica de IR A AJUSTES
+            else if (x >= btnAjustesX && x <= (btnAjustesX + btnAjustesAncho) && yReal >= btnAjustesY && yReal <= (btnAjustesY + btnAjustesAlto)) {
+                pantallaActual = Pantalla.AJUSTES;
+            }
+        }
+        else if (pantallaActual == Pantalla.AJUSTES) {
+            // Lógica de VOLVER al menú
+            if (x >= btnVolverX && x <= (btnVolverX + btnVolverAncho) && yReal >= btnVolverY && yReal <= (btnVolverY + btnVolverAlto)) {
+                pantallaActual = Pantalla.MENU;
+            }
+        }
+        else if (pantallaActual == Pantalla.JUEGO) {
             cambiarSentidoNaveAmiga(x);
         }
     }
@@ -142,12 +163,18 @@ public class Controlador {
             // Si tras comprobar resulta que has muerto, salimos para que no ejecute el resto
             if (!jugando) {
                 musica.stop();
+                pantallaActual = Pantalla.MENU;
                 return;
             }
 
             musica.play();
-            //Comprobar si he ganado
-            jugando=!comprobarSiGano(batallon);
+            // Comprobar si he ganado
+            if (comprobarSiGano(batallon)) {
+                jugando = false;
+                pantallaActual = Pantalla.MENU; // <--- Importante para que salgan los botones
+                musica.stop();
+                return; // Salimos del método ya que no hay nada más que simular
+            }
 
             //disparo yo?
             contadorTiempoAmigo++;
@@ -188,22 +215,30 @@ public class Controlador {
     }
 
     public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
-        // El fondo siempre se pinta (esté el juego en pausa o no)
+        // El fondo siempre bby
         for (ElementoFondo elementoFondo: fondo){
             elementoFondo.pintar(batch, galeriaImagenes);
         }
 
-        // --- CAMBIO AQUÍ ---
-        // Solo pintamos los elementos del juego si estamos jugando
-        if (jugando) {
+        if (pantallaActual == Pantalla.JUEGO) {
             naveAmiga.pintar(batch, galeriaImagenes);
             batallon.pintar(batch, galeriaImagenes);
             pintarPuntuacion(batch, galeriaImagenes);
             pintarVida(batch, galeriaImagenes);
-        } else {
-            // Si NO estamos jugando, pintamos los botones del menú
+        }
+        else if (pantallaActual == Pantalla.MENU) {
             batch.draw(galeriaImagenes.get("botonComenzar"), btnX, btnY, btnAncho, btnAlto);
             batch.draw(galeriaImagenes.get("botonSalir"), btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto);
+            // Tengo que meter este boton a la galeria :(
+            batch.draw(galeriaImagenes.get("botonAjustes"), btnAjustesX, btnAjustesY, btnAjustesAncho, btnAjustesAlto);
+        }
+        else if (pantallaActual == Pantalla.AJUSTES) {
+            // 1. Dibujamos un panel de fondo para la información
+            batch.draw(galeriaImagenes.get("fondoEstrellas"), 100, 100, Gdx.graphics.getWidth()-200, Gdx.graphics.getHeight()-200);
+
+            // 2. Dibujamos el botón de volver
+            batch.draw(galeriaImagenes.get("botonSalir"), btnVolverX, btnVolverY, btnVolverAncho, btnVolverAlto);
+
         }
     }
 
