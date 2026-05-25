@@ -31,12 +31,12 @@ public class Controlador {
 
     private boolean jugando;
 
-    private float btnX, btnY, btnAncho, btnAlto;
+    private float btnJugarX, btnJugarY, btnAncho, btnAlto;
 
-    private float btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto;
+    private float btnSalirX, btnSalirY;
     private enum Pantalla { MENU, JUEGO, AJUSTES}
     private Pantalla pantallaActual = Pantalla.MENU;
-    private float btnAjustesX, btnAjustesY, btnAjustesAncho, btnAjustesAlto;
+    private float btnAjustesX, btnAjustesY;
     private float btnVolverX, btnVolverY, btnVolverAncho, btnVolverAlto;
 
 
@@ -82,32 +82,28 @@ public class Controlador {
         fondo.add(new ElementoFondo((float)Math.random()*800,500,140,140,"planet08.png",0.4f));
         fondo.add(new ElementoFondo((float)Math.random()*800,800,120,120,"planet07.png",0.2f));
 
-
-
-
         musica = Gdx.audio.newMusic(
             Gdx.files.internal("sounds/main_music1.mp3")
         );
         musica.setLooping(true);
         musica.setVolume(0.2f);
 
-        //BotonJugar
-        btnAncho = 250f; // Ajustad el tamaño que queráis mis patrones
+        //Config para los botones
+        float gap = 30f;
+        btnAncho = 250f;
         btnAlto = 90f;
-        btnX = (Gdx.graphics.getWidth() - btnAncho) / 2f;  // Centrado en X
-        btnY = (Gdx.graphics.getHeight() - btnAlto) / 2f;  // Centrado en Y
-
-        // BotonSalir (Lo ponemos 120 píxeles más abajo que el de jugar, ajustar mas adelante)
-        btnSalirAncho = 250f;
-        btnSalirAlto = 90f;
-        btnSalirX = (Gdx.graphics.getWidth() - btnSalirAncho) / 2f;  // Centrado en X igual Jugar
-        btnSalirY = btnY - 120f;                                     // Un poco más abajo en la pantalla uwu
 
         // BotonAjustes (Lo ponemos 120 píxeles más abajo que el de salir, ajustar mas adelante) uwu
-        btnAjustesAncho =250f;
-        btnAjustesAlto = 90f;
-        btnAjustesX = (Gdx.graphics.getWidth() - btnAjustesAncho) / 2f;
-        btnAjustesY = btnSalirY - 120f; // Más abajo que el de salir
+        btnAjustesX = ((Gdx.graphics.getWidth()/2) - (btnAncho/2));
+        btnAjustesY = (Gdx.graphics.getHeight()/2) - (btnAlto/2); // Va en medio
+
+        //BotonJugar
+        btnJugarX = ((Gdx.graphics.getWidth()/2) - (btnAncho/2));  // Centrado en X
+        btnJugarY = btnAjustesY + gap + btnAlto;  // Encima de ajustes
+
+        // BotonSalir (Lo ponemos 120 píxeles más abajo que el de jugar, ajustar mas adelante)
+        btnSalirX = ((Gdx.graphics.getWidth()/2) - (btnAncho/2));  // Centrado en X igual Jugar
+        btnSalirY = btnAjustesY - gap - btnAlto;                                       // Abajo de ajustes
 
         // Botón volver (para salir de ajustes, payaso)
         btnVolverAncho = 200f;
@@ -128,16 +124,16 @@ public class Controlador {
 
         if (pantallaActual == Pantalla.MENU) {
             // Lógica de JUGAR
-            if (x >= btnX && x <= (btnX + btnAncho) && yReal >= btnY && yReal <= (btnY + btnAlto)) {
+            if (x >= btnJugarX && x <= (btnJugarX + btnAncho) && yReal >= btnJugarY && yReal <= (btnJugarY + btnAlto)) {
                 jugando = true;
                 pantallaActual = Pantalla.JUEGO;
             }
             // Lógica de SALIR
-            else if (x >= btnSalirX && x <= (btnSalirX + btnSalirAncho) && yReal >= btnSalirY && yReal <= (btnSalirY + btnSalirAlto)) {
+            else if (x >= btnSalirX && x <= (btnSalirX + btnAncho) && yReal >= btnSalirY && yReal <= (btnSalirY + btnAlto)) {
                 Gdx.app.exit();
             }
             // Lógica de IR A AJUSTES
-            else if (x >= btnAjustesX && x <= (btnAjustesX + btnAjustesAncho) && yReal >= btnAjustesY && yReal <= (btnAjustesY + btnAjustesAlto)) {
+            else if (x >= btnAjustesX && x <= (btnAjustesX + btnAncho) && yReal >= btnAjustesY && yReal <= (btnAjustesY + btnAlto)) {
                 pantallaActual = Pantalla.AJUSTES;
             }
         }
@@ -227,10 +223,10 @@ public class Controlador {
             pintarVida(batch, galeriaImagenes);
         }
         else if (pantallaActual == Pantalla.MENU) {
-            batch.draw(galeriaImagenes.get("botonComenzar"), btnX, btnY, btnAncho, btnAlto);
-            batch.draw(galeriaImagenes.get("botonSalir"), btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto);
+            batch.draw(galeriaImagenes.get("botonComenzar"), btnJugarX, btnJugarY, btnAncho, btnAlto);
+            batch.draw(galeriaImagenes.get("botonSalir"), btnSalirX, btnSalirY, btnAncho, btnAlto);
             // Tengo que meter este boton a la galeria :(
-            batch.draw(galeriaImagenes.get("botonAjustes"), btnAjustesX, btnAjustesY, btnAjustesAncho, btnAjustesAlto);
+            batch.draw(galeriaImagenes.get("botonAjustes"), btnAjustesX, btnAjustesY, btnAncho, btnAlto);
         }
         else if (pantallaActual == Pantalla.AJUSTES) {
             // 1. Dibujamos un panel de fondo para la información
