@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.politecnicomalaga.sp.Main;
 import com.politecnicomalaga.sp.model.Batallon;
 import com.politecnicomalaga.sp.model.DisparoAmi;
 import com.politecnicomalaga.sp.model.DisparoEne;
@@ -130,7 +131,7 @@ public class Controlador {
             }
             // Lógica de SALIR
             else if (x >= btnSalirX && x <= (btnSalirX + btnAncho) && yReal >= btnSalirY && yReal <= (btnSalirY + btnAlto)) {
-                Gdx.app.exit();
+                Main.salir();
             }
             // Lógica de IR A AJUSTES
             else if (x >= btnAjustesX && x <= (btnAjustesX + btnAncho) && yReal >= btnAjustesY && yReal <= (btnAjustesY + btnAlto)) {
@@ -230,7 +231,7 @@ public class Controlador {
         }
         else if (pantallaActual == Pantalla.AJUSTES) {
             // 1. Dibujamos un panel de fondo para la información
-            batch.draw(galeriaImagenes.get("fondoEstrellas"), 100, 100, Gdx.graphics.getWidth()-200, Gdx.graphics.getHeight()-200);
+            batch.draw(galeriaImagenes.get("fondoMenuSettings"), 100, 100, Gdx.graphics.getWidth()-200, Gdx.graphics.getHeight()-200);
 
             // 2. Dibujamos el botón de volver
             batch.draw(galeriaImagenes.get("botonSalir"), btnVolverX, btnVolverY, btnVolverAncho, btnVolverAlto);

@@ -2,6 +2,7 @@ package com.politecnicomalaga.sp;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -103,6 +104,14 @@ public class Main extends ApplicationAdapter {
         image = new Texture("textMenu/FondoEstrellas.png");
         galeriaImagenes.put("fondoEstrellas", image);
 
+        image = new Texture("settingMenu/fondoMenuSettings.png");
+        galeriaImagenes.put("fondoMenuSettings", image);
+        image = new Texture("settingMenu/a.png");
+        galeriaImagenes.put("a", image);
+        image = new Texture("settingMenu/d.png");
+        galeriaImagenes.put("d", image);
+
+
 
 
 
@@ -135,6 +144,10 @@ public class Main extends ApplicationAdapter {
         for (Texture imagen : galeriaImagenes.values()) {
             imagen.dispose();
         }
+    }
+
+    public static  void salir(){
+        Gdx.app.exit();
     }
 }
 
