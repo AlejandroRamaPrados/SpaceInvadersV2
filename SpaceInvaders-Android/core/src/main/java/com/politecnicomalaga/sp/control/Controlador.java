@@ -35,6 +35,14 @@ public class Controlador {
 
     private float btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto;
 
+    private boolean enAjustes; // true = el usuario está mirando los ajustes
+
+    // Coordenadas del botón Ajustes (Menú Principal)
+    private float btnAjustesX, btnAjustesY, btnAjustesAncho, btnAjustesAlto;
+
+    // Coordenadas del botón Volver (Pantalla de Ajustes)
+    private float btnVolverX, btnVolverY, btnVolverAncho, btnVolverAlto;
+
     //CONSTRUCTOR
 
 
@@ -77,29 +85,43 @@ public class Controlador {
         fondo.add(new ElementoFondo((float)Math.random()*800,500,140,140,"planet08.png",0.4f));
         fondo.add(new ElementoFondo((float)Math.random()*800,800,120,120,"planet07.png",0.2f));
 
+        // CAMBIO AQUI
+        enAjustes = false; // Empezamos en el menú principal
+
+        btnAncho = 250f;
+        btnAlto = 90f;
+        btnX = (Gdx.graphics.getWidth() - btnAncho) / 2f;
+        btnY = (Gdx.graphics.getHeight() - btnAlto) / 2f + 160f;
+
+        btnAjustesAncho = 350f;
+        btnAjustesAlto = 120f;
+        btnAjustesX = (Gdx.graphics.getWidth() - btnAjustesAncho) / 2f;
+        btnAjustesY = (Gdx.graphics.getHeight() - btnAjustesAlto) / 2f;
+
+        btnSalirAncho = 250f;
+        btnSalirAlto = 90f;
+        btnSalirX = (Gdx.graphics.getWidth() - btnSalirAncho) / 2f;
+        btnSalirY = (Gdx.graphics.getHeight() - btnSalirAlto) / 2f - 160f;
 
 
+
+
+        // Botón Volver (Dentro de los Ajustes)
+        btnVolverAncho = 250f;
+        btnVolverAlto = 90f;
+        btnVolverX = 50f;
+        btnVolverY = 50f;
 
         musica = Gdx.audio.newMusic(
             Gdx.files.internal("sounds/main_music1.mp3")
         );
         musica.setLooping(true);
         musica.setVolume(0.2f);
-
-        //BotonJugar
-        btnAncho = 250f; // Ajustad el tamaño que queráis mis patrones
-        btnAlto = 90f;
-        btnX = (Gdx.graphics.getWidth() - btnAncho) / 2f;  // Centrado en X
-        btnY = (Gdx.graphics.getHeight() - btnAlto) / 2f;  // Centrado en Y
-
-        // BotonSalir (Lo ponemos 120 píxeles más abajo que el de jugar, ajustar mas adelante)
-        btnSalirAncho = 250f;
-        btnSalirAlto = 90f;
-        btnSalirX = (Gdx.graphics.getWidth() - btnSalirAncho) / 2f;  // Centrado en X igual Jugar
-        btnSalirY = btnY - 120f;                                     // Un poco más abajo en la pantalla uwu
     }
 
     //Otros métodos
+
+
     public static Controlador getInstance(){
         if (miSingle == null){
             miSingle= new Controlador();
@@ -110,24 +132,24 @@ public class Controlador {
         float yReal = Gdx.graphics.getHeight() - y;
 
         if (!jugando) {
-            // 1. Comprobamos si pulsa el botón de JUGAR
-            if (x >= btnX && x <= (btnX + btnAncho) && yReal >= btnY && yReal <= (btnY + btnAlto)) {
-
-                System.out.println("¡Partida Iniciada!");
-                jugando = true;
-
-                btnX = -1000;
-                btnY = -1000;
+            if (enAjustes) {
+                // Si pincha el botón Volver, quitamos la pantalla de ajustes
+                if (x >= btnVolverX && x <= (btnVolverX + btnVolverAncho) && yReal >= btnVolverY && yReal <= (btnVolverY + btnVolverAlto)) {
+                    enAjustes = false;
+                }
+            } else {
+                // Clics del Menú Principal (Jugar y Salir que ya tenías)
+                if (x >= btnX && x <= (btnX + btnAncho) && yReal >= btnY && yReal <= (btnY + btnAlto)) {
+                    jugando = true;
+                }
+                // NUEVO: Si pincha en Ajustes, cambiamos el estado
+                else if (x >= btnAjustesX && x <= (btnAjustesX + btnAjustesAncho) && yReal >= btnAjustesY && yReal <= (btnAjustesY + btnAjustesAlto)) {
+                    enAjustes = true;
+                }
+                else if (x >= btnSalirX && x <= (btnSalirX + btnSalirAncho) && yReal >= btnSalirY && yReal <= (btnSalirY + btnSalirAlto)) {
+                    Gdx.app.exit();
+                }
             }
-            // 2. Comprobamos si pulsa el botón de SALIR
-            else if (x >= btnSalirX && x <= (btnSalirX + btnSalirAncho) && yReal >= btnSalirY && yReal <= (btnSalirY + btnSalirAlto)) {
-
-                System.out.println("Cerrando el juego...");
-                Gdx.app.exit(); // <<< Este comando cierra la aplicación por completo
-
-            }
-        } else {
-            cambiarSentidoNaveAmiga(x);
         }
     }
     public void simulaMundo(float anchoPantalla, float altoPantalla){
@@ -188,24 +210,30 @@ public class Controlador {
     }
 
     public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
-        // El fondo siempre se pinta (esté el juego en pausa o no)
+        // El fondo siempre se pinta
         for (ElementoFondo elementoFondo: fondo){
             elementoFondo.pintar(batch, galeriaImagenes);
         }
 
-        // --- CAMBIO AQUÍ ---
-        // Solo pintamos los elementos del juego si estamos jugando
         if (jugando) {
+            // Tu código original para pintar elementos del juego
             naveAmiga.pintar(batch, galeriaImagenes);
             batallon.pintar(batch, galeriaImagenes);
             pintarPuntuacion(batch, galeriaImagenes);
             pintarVida(batch, galeriaImagenes);
         } else {
-            // Si NO estamos jugando, pintamos los botones del menú
-            batch.draw(galeriaImagenes.get("botonComenzar"), btnX, btnY, btnAncho, btnAlto);
-            batch.draw(galeriaImagenes.get("botonSalir"), btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto);
+            if (enAjustes) {
+                // PINTA LA PANTALLA DE AJUSTES
+                batch.draw(galeriaImagenes.get("botonVolver"), btnVolverX, btnVolverY, btnVolverAncho, btnVolverAlto);
+            } else {
+                // PINTA EL MENÚ PRINCIPAL
+                batch.draw(galeriaImagenes.get("botonComenzar"), btnX, btnY, btnAncho, btnAlto);
+                batch.draw(galeriaImagenes.get("botonAjustes"), btnAjustesX, btnAjustesY, btnAjustesAncho, btnAjustesAlto);
+                batch.draw(galeriaImagenes.get("botonSalir"), btnSalirX, btnSalirY, btnSalirAncho, btnSalirAlto);
+            }
         }
     }
+
 
 
     public void cambiarSentidoNaveAmiga (float x){

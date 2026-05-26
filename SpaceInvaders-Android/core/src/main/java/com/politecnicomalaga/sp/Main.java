@@ -62,8 +62,6 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes.put("planet08.png", image);
         image = new Texture("planets/planet09.png");
         galeriaImagenes.put("planet09.png", image);
-        image = new Texture("planets/planet09.png");
-        galeriaImagenes.put("planet09.png", image);
 
         image = new Texture("numbers/Number0.png");
         galeriaImagenes.put("Number0.png", image);
@@ -97,9 +95,13 @@ public class Main extends ApplicationAdapter {
         image = new Texture("textMenu/Salir.png");
         galeriaImagenes.put("botonSalir", image);
 
+        // --- ASIGNACIÓN DE NUEVAS TEXTURAS PARA AJUSTES ---
+        // Asegúrate de guardar estos archivos PNG dentro de la carpeta assets/textMenu/
+        image = new Texture("textMenu/Ajustes.png");
+        galeriaImagenes.put("botonAjustes", image);
 
-
-
+        image = new Texture("textMenu/Volver.png");
+        galeriaImagenes.put("botonVolver", image);
     }
 
     @Override
@@ -131,4 +133,3 @@ public class Main extends ApplicationAdapter {
         }
     }
 }
-
