@@ -187,7 +187,10 @@ public class Controlador {
         for (DisparoAmi disparoAmi: disparoAmis){
             if (batallon.comprobarSiMeHanDado(disparoAmi)) {
                 puntuacion+=10+ (int)(Math.random()*15);
-                crearExplosion(disparoAmi.getX(), disparoAmi.getY(), naveAmiga.getWidth());
+
+                float impactoX = disparoAmi.getX();
+                float impactoY = disparoAmi.getY() + disparoAmi.getHeight() + (naveAmiga.getHeight() * 0.25f);
+                crearExplosion(impactoX, impactoY, naveAmiga.getWidth() * 1.5f);
             }
         }
     }
@@ -217,6 +220,6 @@ public class Controlador {
     }
 
     public void crearExplosion(float x, float y, float tam){
-        explosiones.add(new Explosion(x, y, tam));
+        explosiones.add(new Explosion(x - tam/2, y - tam/2, tam));
     }
 }
