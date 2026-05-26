@@ -95,7 +95,6 @@ public class Main extends ApplicationAdapter {
 
         image = new Texture("textMenu/Jugar.png");
         galeriaImagenes.put("botonComenzar", image);
-
         image = new Texture("textMenu/Salir.png");
         galeriaImagenes.put("botonSalir", image);
         image = new Texture("textMenu/Ayuda.png");
@@ -104,6 +103,8 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes.put("botonAjustes", image);
         image = new Texture("textMenu/FondoEstrellas.png");
         galeriaImagenes.put("fondoEstrellas", image);
+        image = new Texture("textMenu/TituloSpaceSinFondo.png");
+        galeriaImagenes.put("titulo", image);
 
         image = new Texture("settingMenu/fondoMenuSettings.png");
         galeriaImagenes.put("fondoMenuSettings", image);
@@ -111,6 +112,7 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes.put("a", image);
         image = new Texture("settingMenu/d.png");
         galeriaImagenes.put("d", image);
+
 
 
 

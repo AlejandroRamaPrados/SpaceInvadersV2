@@ -13,13 +13,14 @@ import com.politecnicomalaga.sp.model.Escuadron;
 import com.politecnicomalaga.sp.model.NaveAmi;
 import com.politecnicomalaga.sp.model.NaveEne;
 import com.politecnicomalaga.sp.model.Ovni;
+import com.politecnicomalaga.sp.model.button;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Controlador {
-    private Music musica;
+    private Music musicaJuego, musicaMenu;
     private static Controlador miSingle;
     private NaveAmi naveAmiga;
     private final float velocidadNave;
@@ -34,13 +35,11 @@ public class Controlador {
     private final float velBase; // Velocidad adaptada al ancho
     private final float anchoPantalla,altoPantalla;
 
-    private float btnJugarX, btnJugarY, btnAncho, btnAlto;
-
-    private float btnSalirX, btnSalirY;
+    private float btnAncho, btnAlto;
     private enum Pantalla { MENU, JUEGO, AJUSTES}
     private Pantalla pantallaActual = Pantalla.MENU;
-    private float btnAjustesX, btnAjustesY;
-    private float btnVolverX, btnVolverY, btnVolverAncho, btnVolverAlto;
+    private button btnJugar, btnSalir, btnAjustes, btnVolver, btnTitulo;
+
 
 
     //CONSTRUCTOR
@@ -88,34 +87,30 @@ public class Controlador {
         fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.2f,uW*25,uW*25,"planet09.png",altoPantalla*0.25f));
         fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.5f,uW*35,uW*35,"planet08.png",altoPantalla*0.20f));
         fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.8f,uW*30,uW*30,"planet07.png",altoPantalla*0.35f));
-        musica = Gdx.audio.newMusic(
-            Gdx.files.internal("sounds/main_music1.mp3")
-        );
-        musica.setLooping(true);
-        musica.setVolume(0.2f);
 
-        //Config para los botones
-        float gap = 30f;
-        btnAncho = 250f;
-        btnAlto = 90f;
+        // Inicializamos las músicas
+        musicaJuego = Gdx.audio.newMusic(Gdx.files.internal("sounds/main_music1.mp3"));
+        musicaJuego.setLooping(true);
+        musicaJuego.setVolume(0.2f);
 
-        // BotonAjustes (Lo ponemos 120 píxeles más abajo que el de salir, ajustar mas adelante) uwu
-        btnAjustesX = ((Gdx.graphics.getWidth()/2) - (btnAncho/2));
-        btnAjustesY = (Gdx.graphics.getHeight()/2) - (btnAlto/2); // Va en medio
+        musicaMenu = Gdx.audio.newMusic(Gdx.files.internal("sounds/menuAmbiental.mp3"));
+        musicaMenu.setLooping(true);
+        musicaMenu.setVolume(0.3f);
 
-        //BotonJugar
-        btnJugarX = ((Gdx.graphics.getWidth()/2) - (btnAncho/2));  // Centrado en X
-        btnJugarY = btnAjustesY + gap + btnAlto;  // Encima de ajustes
+        //Config para los botones adaptada a la pantalla
+        btnAncho = 20 * uW;
+        btnAlto = 13* uH;
+        float gap = 2 * uH;
 
-        // BotonSalir (Lo ponemos 120 píxeles más abajo que el de jugar, ajustar mas adelante)
-        btnSalirX = ((Gdx.graphics.getWidth()/2) - (btnAncho/2));  // Centrado en X igual Jugar
-        btnSalirY = btnAjustesY - gap - btnAlto;                                       // Abajo de ajustes
+        float centerX = (anchoPantalla - btnAncho) / 2f;
+        float centerY = (altoPantalla - btnAlto) / 2f;
 
-        // Botón volver (para salir de ajustes, payaso)
-        btnVolverAncho = 200f;
-        btnVolverAlto = 70f;
-        btnVolverX = 20f; // Esquina inferior
-        btnVolverY = 20f;
+        btnJugar = new button(centerX, centerY, btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonComenzar");
+        btnAjustes = new button(centerX, btnJugar.getY() -btnAlto-gap, btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonAjustes");
+        btnTitulo = new button(anchoPantalla/2 - (3*btnAncho)/2, btnJugar.getY() + btnAlto + 2*gap, 3* btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "titulo");
+
+        btnSalir = new button(centerX, btnAjustes.getY() - btnAlto - gap, btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
+        btnVolver = new button(2 * uW, 2 * uH, 25 * uW, 18 * uH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
     }
 
     //Otros métodos
@@ -126,26 +121,20 @@ public class Controlador {
         return miSingle;
     }
     public void click (float x, float y){
-        float yReal = Gdx.graphics.getHeight() - y;
+        float yReal = altoPantalla - y;
 
         if (pantallaActual == Pantalla.MENU) {
-            // Lógica de JUGAR
-            if (x >= btnJugarX && x <= (btnJugarX + btnAncho) && yReal >= btnJugarY && yReal <= (btnJugarY + btnAlto)) {
+            if (btnJugar.click(x, yReal)) {
                 jugando = true;
                 pantallaActual = Pantalla.JUEGO;
-            }
-            // Lógica de SALIR
-            else if (x >= btnSalirX && x <= (btnSalirX + btnAncho) && yReal >= btnSalirY && yReal <= (btnSalirY + btnAlto)) {
-                Main.salir();
-            }
-            // Lógica de IR A AJUSTES
-            else if (x >= btnAjustesX && x <= (btnAjustesX + btnAncho) && yReal >= btnAjustesY && yReal <= (btnAjustesY + btnAlto)) {
+            } else if (btnSalir.click(x, yReal)) {
+                Gdx.app.exit();
+            } else if (btnAjustes.click(x, yReal)) {
                 pantallaActual = Pantalla.AJUSTES;
             }
         }
         else if (pantallaActual == Pantalla.AJUSTES) {
-            // Lógica de VOLVER al menú
-            if (x >= btnVolverX && x <= (btnVolverX + btnVolverAncho) && yReal >= btnVolverY && yReal <= (btnVolverY + btnVolverAlto)) {
+            if (btnVolver.click(x, yReal)) {
                 pantallaActual = Pantalla.MENU;
             }
         }
@@ -159,22 +148,30 @@ public class Controlador {
             elementoFondo.actualizar(delta, altoPantalla, anchoPantalla);
         }
 
+        // Gestión de la música según la pantalla actual
+        if (pantallaActual == Pantalla.MENU || pantallaActual == Pantalla.AJUSTES) {
+            if (musicaJuego.isPlaying()) musicaJuego.stop();
+            if (!musicaMenu.isPlaying()) musicaMenu.play();
+        } else {
+            if (musicaMenu.isPlaying()) musicaMenu.stop();
+        }
+
         if (jugando){
             jugando = naveAmiga.estaVivo() && batallon.tieneTropas();
 
             // Si tras comprobar resulta que has muerto, salimos para que no ejecute el resto
             if (!jugando) {
-                musica.stop();
+                musicaJuego.stop();
                 pantallaActual = Pantalla.MENU;
                 return;
             }
+            if (!musicaJuego.isPlaying()) musicaJuego.play();
 
-            musica.play();
             // Comprobar si he ganado
             if (comprobarSiGano(batallon)) {
                 jugando = false;
                 pantallaActual = Pantalla.MENU; // <--- Importante para que salgan los botones
-                musica.stop();
+                musicaJuego.stop();
                 return; // Salimos del método ya que no hay nada más que simular
             }
 
@@ -214,7 +211,7 @@ public class Controlador {
             naveAmiga.gestionarMisDisparos(altoPantalla);
             batallon.gestionarDisparos(0);
         }
-        if (!jugando) musica.stop();
+        if (!jugando && pantallaActual == Pantalla.JUEGO) musicaJuego.stop();
     }
 
     public void pintar(SpriteBatch batch, Map<String, Texture> galeriaImagenes){
@@ -230,18 +227,14 @@ public class Controlador {
             pintarVida(batch, galeriaImagenes);
         }
         else if (pantallaActual == Pantalla.MENU) {
-            batch.draw(galeriaImagenes.get("botonComenzar"), btnJugarX, btnJugarY, btnAncho, btnAlto);
-            batch.draw(galeriaImagenes.get("botonSalir"), btnSalirX, btnSalirY, btnAncho, btnAlto);
-            // Tengo que meter este boton a la galeria :(
-            batch.draw(galeriaImagenes.get("botonAjustes"), btnAjustesX, btnAjustesY, btnAncho, btnAlto);
+            btnTitulo.pintar(batch,galeriaImagenes);
+            btnJugar.pintar(batch, galeriaImagenes);
+            btnSalir.pintar(batch, galeriaImagenes);
+            btnAjustes.pintar(batch, galeriaImagenes);
         }
         else if (pantallaActual == Pantalla.AJUSTES) {
-            // 1. Dibujamos un panel de fondo para la información
-            batch.draw(galeriaImagenes.get("fondoMenuSettings"), 100, 100, Gdx.graphics.getWidth()-200, Gdx.graphics.getHeight()-200);
-
-            // 2. Dibujamos el botón de volver
-            batch.draw(galeriaImagenes.get("botonSalir"), btnVolverX, btnVolverY, btnVolverAncho, btnVolverAlto);
-
+            // Dibujamos el botón de volver
+            btnVolver.pintar(batch, galeriaImagenes);
         }
     }
 
