@@ -129,6 +129,7 @@ public class Controlador {
 
         if (pantallaActual == Pantalla.MENU) {
             if (btnJugar.click(x, yReal)) {
+                reiniciarJuego();
                 jugando = true;
                 pantallaActual = Pantalla.JUEGO;
             } else if (btnSalir.click(x, yReal)) {
@@ -301,8 +302,50 @@ public class Controlador {
             batch.draw(galeriaImagenes.get("Number"+digito+".png"),xInicial + (i*tamNum), altoPantalla-tamNum-margen,tamNum,tamNum);
         }
     }
-
     public void crearExplosion(float x, float y, float tam){
         explosiones.add(new Explosion(x - tam/2, y - tam/2, tam));
+    }
+    public void reiniciarJuego() {
+        float uW = anchoPantalla / 100f;
+        float uH = altoPantalla / 100f;
+        float tamEnemigo = uW * 5f;
+
+        // 1. Resetear nave amiga
+        naveAmiga.setVidas(3); // O las vidas iniciales que prefieras
+        naveAmiga.setEstado(Ovni.Estado.VIVO);
+        naveAmiga.setX(anchoPantalla / 2); // Centrar nave
+
+        // 2. Resetear Batallón (esto debería recrear los enemigos)
+        // Dependiendo de cómo esté tu clase Batallon, podrías necesitar un método reset allí
+        this.batallon = new Batallon(
+            anchoPantalla % 2,
+            altoPantalla - tamEnemigo * 1.5f,
+            uH * 2,
+            tamEnemigo,
+            tamEnemigo * 0.8f,
+            Ovni.Estado.VIVO,
+            Ovni.Direccion.DERECHA,
+            "sprites/enemigo1.png",
+            "sprites/enemigo2.png",
+            1,
+            2,
+            180,
+            uW * 1.5f,
+            uH * 6,
+            0.1f * anchoPantalla,
+            7,
+            5,
+            10,
+            0.06f * anchoPantalla
+        );
+
+        // 3. Resetear puntuación y listas
+        naveAmiga.getMisDisparos().clear();
+        this.puntuacion = 0;
+        this.explosiones.clear();
+
+        // 4. Volver a activar la música
+        musicaMenu.stop();
+        musicaJuego.play();
     }
 }
