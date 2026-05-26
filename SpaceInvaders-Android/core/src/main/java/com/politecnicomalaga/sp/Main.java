@@ -116,6 +116,14 @@ public class Main extends ApplicationAdapter {
         image = new Texture("settingMenu/d.png");
         galeriaImagenes.put("d", image);
 
+        image = new Texture("sprites/mas.png");
+        galeriaImagenes.put("botonMas", image);
+        image = new Texture("sprites/menos.png");
+        galeriaImagenes.put("botonMenos", image);
+        image = new Texture("sprites/barra.png");
+        galeriaImagenes.put("barra", image);
+        image = new Texture("sprites/barra2.png");
+        galeriaImagenes.put("barra2", image);
 
 
 

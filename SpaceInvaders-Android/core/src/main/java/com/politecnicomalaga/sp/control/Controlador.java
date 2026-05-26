@@ -42,7 +42,9 @@ public class Controlador {
     private Pantalla pantallaActual = Pantalla.MENU;
     private button btnJugar, btnSalir, btnAjustes, btnVolver, btnTitulo;
 
-
+    private float volumenActual = 0.5f; // Rango de 0 a 1
+    private button btnMasVol, btnMenosVol;
+    private float barraX, barraY, barraAncho, barraAlto;
 
     //CONSTRUCTOR
 
@@ -114,6 +116,16 @@ public class Controlador {
         btnSalir = new button(centerX, btnAjustes.getY() - btnAlto - gap, btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
         btnVolver = new button(2 * uW, 2 * uH, 25 * uW, 18 * uH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
 
+        barraAncho = 40 * uW;
+        barraAlto = 5 * uH;
+        barraX = (anchoPantalla - barraAncho) / 2f;
+        barraY = altoPantalla / 2f;
+
+        // Botones para subir y bajar volumen a los lados de la barra
+
+        btnMenosVol = new button(barraX - 12 * uW, barraY - 2*uH, 10 * uW, 10 * uH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonMenos");
+        btnMasVol = new button(barraX + barraAncho + 2 * uW, barraY - 2*uH, 10 * uW, 10 * uH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonMas");
+
         explosiones = new ArrayList<>();
     }
 
@@ -141,6 +153,13 @@ public class Controlador {
         else if (pantallaActual == Pantalla.AJUSTES) {
             if (btnVolver.click(x, yReal)) {
                 pantallaActual = Pantalla.MENU;
+            }
+            else if (btnMasVol.click(x, yReal)) {
+                volumenActual = Math.min(1.0f, volumenActual + 0.01f);
+                actualizarVolumen();
+            } else if (btnMenosVol.click(x, yReal)) {
+                volumenActual = Math.max(0.0f, volumenActual - 0.01f);
+                actualizarVolumen();
             }
         }
         else if (pantallaActual == Pantalla.JUEGO) {
@@ -249,6 +268,10 @@ public class Controlador {
         else if (pantallaActual == Pantalla.AJUSTES) {
             // Dibujamos el botón de volver
             btnVolver.pintar(batch, galeriaImagenes);
+            btnMasVol.pintar(batch, galeriaImagenes);
+            btnMenosVol.pintar(batch, galeriaImagenes);
+            batch.draw(galeriaImagenes.get("barra2"), barraX, barraY, barraAncho, barraAlto);
+            batch.draw(galeriaImagenes.get("barra"), barraX, barraY, barraAncho * volumenActual, barraAlto);
         }
     }
 
@@ -347,5 +370,9 @@ public class Controlador {
         // 4. Volver a activar la música
         musicaMenu.stop();
         musicaJuego.play();
+    }
+    private void actualizarVolumen() {
+        musicaJuego.setVolume(volumenActual);
+        musicaMenu.setVolume(volumenActual);
     }
 }
