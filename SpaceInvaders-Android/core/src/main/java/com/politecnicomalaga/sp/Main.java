@@ -87,13 +87,11 @@ public class Main extends ApplicationAdapter {
         image = new Texture("numbers/Number9.png");
         galeriaImagenes.put("Number9.png", image);
 
-
-
-
+        image = new Texture("sprites/explosion.png");
+        galeriaImagenes.put("explosion.png", image);
 
         anchoPantalla = Gdx.graphics.getWidth();
         altoPantalla = Gdx.graphics.getHeight();
-
     }
 
     @Override

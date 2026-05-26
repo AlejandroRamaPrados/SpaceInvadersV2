@@ -9,6 +9,7 @@ import com.politecnicomalaga.sp.model.DisparoAmi;
 import com.politecnicomalaga.sp.model.DisparoEne;
 import com.politecnicomalaga.sp.model.ElementoFondo;
 import com.politecnicomalaga.sp.model.Escuadron;
+import com.politecnicomalaga.sp.model.Explosion;
 import com.politecnicomalaga.sp.model.NaveAmi;
 import com.politecnicomalaga.sp.model.NaveEne;
 import com.politecnicomalaga.sp.model.Ovni;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Controlador {
+    private List<Explosion> explosiones;
     private Music musica;
     private static Controlador miSingle;
     private NaveAmi naveAmiga;
@@ -80,6 +82,8 @@ public class Controlador {
         );
         musica.setLooping(true);
         musica.setVolume(0.2f);
+
+        explosiones = new ArrayList<>();
     }
 
     //Otros métodos
@@ -141,6 +145,12 @@ public class Controlador {
             //gestiono todos los disparos
             naveAmiga.gestionarMisDisparos(altoPantalla);
             batallon.gestionarDisparos(0);
+
+            for (int i = explosiones.size() - 1; i >= 0; i--) {
+                if (explosiones.get(i).actualizar(delta)) {
+                    explosiones.remove(i);
+                }
+            }
         }
         if (!jugando) musica.stop();
     }
@@ -155,6 +165,9 @@ public class Controlador {
         pintarPuntuacion(batch, galeriaImagenes);
         pintarVida(batch, galeriaImagenes);
 
+        for (Explosion explosion : explosiones) {
+            explosion.pintar(batch, galeriaImagenes);
+        }
     }
 
     public void cambiarSentidoNaveAmiga (float x){
@@ -172,7 +185,10 @@ public class Controlador {
     }
     public  void hematado(Batallon batallon, List<DisparoAmi> disparoAmis){
         for (DisparoAmi disparoAmi: disparoAmis){
-            if (batallon.comprobarSiMeHanDado(disparoAmi)) puntuacion+=10+ (int)(Math.random()*15);
+            if (batallon.comprobarSiMeHanDado(disparoAmi)) {
+                puntuacion+=10+ (int)(Math.random()*15);
+                crearExplosion(disparoAmi.getX(), disparoAmi.getY(), naveAmiga.getWidth());
+            }
         }
     }
     public void meHanTocado(Batallon batallon, NaveAmi naveAmiga) {
@@ -198,5 +214,9 @@ public class Controlador {
             char digito = puntuacionString.charAt(i);
             batch.draw(galeriaImagenes.get("Number"+digito+".png"),xInicial + (i*tamNum), altoPantalla-tamNum-margen,tamNum,tamNum);
         }
+    }
+
+    public void crearExplosion(float x, float y, float tam){
+        explosiones.add(new Explosion(x, y, tam));
     }
 }
