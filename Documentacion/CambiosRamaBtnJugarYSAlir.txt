@@ -1,0 +1,35 @@
+Controlador:
+
+Declaracion nuevos atributos: (Linea 34 - 36)
+
+	-Se añaden variables posicion boton jugar y salir
+
+Constructor: 
+	
+	-Se cambia jugando true por false (Linea 70)
+
+	-Se inicializan las posiciones de los botones (Linea 89 - 100)
+
+	-Se actualiza metodo click (Linea 109 - 132)
+	para que solo reciba primero el click en jugar o salir
+
+	-Simulamundo (Linea 140)
+		
+		-Se elimina que jugando al principio del bucle
+
+	-Simulamundo (Linea 143 - 146)
+		
+		-Se introduce la comprobacion de de la vida
+		dentro del bloque if
+
+	-Pintar (Linea 200 - 205)
+		
+		-Solo se pinta el boton si no ha comenzado la partida
+
+	
+Main
+
+	-Metodo create
+		
+		-Se añaden los nuevos botones(Linea 94 -98)
+

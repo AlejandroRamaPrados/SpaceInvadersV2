@@ -3,6 +3,7 @@ package com.politecnicomalaga.sp;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -16,10 +17,10 @@ public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Texture image;
 
-    private float anchoPantalla,altoPantalla;
+    private float anchoPantalla, altoPantalla;
 
-    private float y,x;
-    Map<String,Texture> galeriaImagenes;
+    private float y, x;
+    Map<String, Texture> galeriaImagenes;
 
 
     @Override
@@ -28,11 +29,11 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes = new HashMap<>();
 
         image = new Texture("sprites/enemigo1.png");
-        galeriaImagenes.put("sprites/enemigo1.png",image);
+        galeriaImagenes.put("sprites/enemigo1.png", image);
         image = new Texture("sprites/enemigo2.png");
-        galeriaImagenes.put("sprites/enemigo2.png",image);
+        galeriaImagenes.put("sprites/enemigo2.png", image);
         image = new Texture("sprites/naveJugador.png");
-        galeriaImagenes.put("sprites/naveJugador.png",image);
+        galeriaImagenes.put("sprites/naveJugador.png", image);
         image = new Texture("sprites/disparoAmi.png");
         galeriaImagenes.put("sprites/disparoAmi.png", image);
         image = new Texture("sprites/disparoEne.png");
@@ -41,29 +42,29 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes.put("vida.png", image);
 
 
-        image= new Texture("planets/estrella.png");
+        image = new Texture("planets/estrella.png");
         galeriaImagenes.put("estrella.png", image);
-        image= new Texture("planets/planet00.png");
+        image = new Texture("planets/planet00.png");
         galeriaImagenes.put("planet00.png", image);
-        image= new Texture("planets/planet01.png");
+        image = new Texture("planets/planet01.png");
         galeriaImagenes.put("planet01.png", image);
-        image= new Texture("planets/planet02.png");
+        image = new Texture("planets/planet02.png");
         galeriaImagenes.put("planet02.png", image);
-        image= new Texture("planets/planet03.png");
+        image = new Texture("planets/planet03.png");
         galeriaImagenes.put("planet03.png", image);
-        image= new Texture("planets/planet04.png");
+        image = new Texture("planets/planet04.png");
         galeriaImagenes.put("planet04.png", image);
-        image= new Texture("planets/planet05.png");
+        image = new Texture("planets/planet05.png");
         galeriaImagenes.put("planet05.png", image);
-        image= new Texture("planets/planet06.png");
+        image = new Texture("planets/planet06.png");
         galeriaImagenes.put("planet06.png", image);
-        image= new Texture("planets/planet07.png");
+        image = new Texture("planets/planet07.png");
         galeriaImagenes.put("planet07.png", image);
-        image= new Texture("planets/planet08.png");
+        image = new Texture("planets/planet08.png");
         galeriaImagenes.put("planet08.png", image);
-        image= new Texture("planets/planet09.png");
+        image = new Texture("planets/planet09.png");
         galeriaImagenes.put("planet09.png", image);
-        image= new Texture("planets/planet09.png");
+        image = new Texture("planets/planet09.png");
         galeriaImagenes.put("planet09.png", image);
 
         image = new Texture("numbers/Number0.png");
@@ -88,11 +89,32 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes.put("Number9.png", image);
 
 
-
-
-
         anchoPantalla = Gdx.graphics.getWidth();
         altoPantalla = Gdx.graphics.getHeight();
+
+
+        image = new Texture("textMenu/Jugar.png");
+        galeriaImagenes.put("botonComenzar", image);
+
+        image = new Texture("textMenu/Salir.png");
+        galeriaImagenes.put("botonSalir", image);
+        image = new Texture("textMenu/Ayuda.png");
+        galeriaImagenes.put("botonAjustes", image);
+        image = new Texture("textMenu/Ayuda.png");
+        galeriaImagenes.put("botonAjustes", image);
+        image = new Texture("textMenu/FondoEstrellas.png");
+        galeriaImagenes.put("fondoEstrellas", image);
+
+        image = new Texture("settingMenu/fondoMenuSettings.png");
+        galeriaImagenes.put("fondoMenuSettings", image);
+        image = new Texture("settingMenu/a.png");
+        galeriaImagenes.put("a", image);
+        image = new Texture("settingMenu/d.png");
+        galeriaImagenes.put("d", image);
+
+
+
+
 
     }
 
@@ -105,10 +127,10 @@ public class Main extends ApplicationAdapter {
             Controlador.getInstance(anchoPantalla,altoPantalla).cambiarSentidoNaveAmiga(0);
         } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             Controlador.getInstance(anchoPantalla,altoPantalla).cambiarSentidoNaveAmiga(anchoPantalla);
-        } else if(Gdx.input.isTouched()){
-            x= Gdx.input.getX();
-            y=Gdx.input.getY();
-            Controlador.getInstance(anchoPantalla, altoPantalla).click(x,y);
+        } else if(Gdx.input.isTouched()) {
+            x = Gdx.input.getX();
+            y = Gdx.input.getY();
+            Controlador.getInstance(anchoPantalla, altoPantalla).click(x, y);
         }
 
 
@@ -129,4 +151,9 @@ public class Main extends ApplicationAdapter {
             imagen.dispose();
         }
     }
+
+    public static  void salir(){
+        Gdx.app.exit();
+    }
 }
+
