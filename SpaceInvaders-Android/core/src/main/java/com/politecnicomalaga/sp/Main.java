@@ -109,20 +109,18 @@ public class Main extends ApplicationAdapter {
         image = new Texture("textMenu/TituloSpaceSinFondo.png");
         galeriaImagenes.put("titulo", image);
 
-        image = new Texture("settingMenu/fondoMenuSettings.png");
-        galeriaImagenes.put("fondoMenuSettings", image);
-        image = new Texture("settingMenu/a.png");
-        galeriaImagenes.put("a", image);
-        image = new Texture("settingMenu/d.png");
-        galeriaImagenes.put("d", image);
+        image = new Texture("settingMenu/infoMenu.png");
+        galeriaImagenes.put("infoMenu", image);
+        image = new Texture("settingMenu/musicHeader.png");
+        galeriaImagenes.put("musicHeader", image);
 
-        image = new Texture("sprites/mas.png");
+        image = new Texture("settingMenu/mas.png");
         galeriaImagenes.put("botonMas", image);
-        image = new Texture("sprites/menos.png");
+        image = new Texture("settingMenu/menos.png");
         galeriaImagenes.put("botonMenos", image);
-        image = new Texture("sprites/barra.png");
+        image = new Texture("settingMenu/barra.png");
         galeriaImagenes.put("barra", image);
-        image = new Texture("sprites/barra2.png");
+        image = new Texture("settingMenu/barra2.png");
         galeriaImagenes.put("barra2", image);
 
 

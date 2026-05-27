@@ -42,9 +42,13 @@ public class Controlador {
     private Pantalla pantallaActual = Pantalla.MENU;
     private button btnJugar, btnSalir, btnAjustes, btnVolver, btnTitulo;
 
-    private float volumenActual = 0.5f; // Rango de 0 a 1
+    private float volumenActual; // Rango de 0 a 1
     private button btnMasVol, btnMenosVol;
     private float barraX, barraY, barraAncho, barraAlto;
+
+    // Elementos visuales de Ajustes
+    private float infoX, infoY, infoW, infoH;
+    private float musicX, musicY, musicW, musicH;
 
     //CONSTRUCTOR
 
@@ -93,6 +97,8 @@ public class Controlador {
         fondo.add(new ElementoFondo((float)Math.random()*anchoPantalla,altoPantalla*0.8f,uW*30,uW*30,"planet07.png",altoPantalla*0.35f));
 
         // Inicializamos las músicas
+        volumenActual = 0.5f;
+
         musicaJuego = Gdx.audio.newMusic(Gdx.files.internal("sounds/main_music1.mp3"));
         musicaJuego.setLooping(true);
         musicaJuego.setVolume(0.2f);
@@ -109,22 +115,39 @@ public class Controlador {
         float centerX = (anchoPantalla - btnAncho) / 2f;
         float centerY = (altoPantalla - btnAlto) / 2f;
 
+        // --- PANTALLA MENU ---
         btnJugar = new button(centerX, centerY, btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonComenzar");
         btnAjustes = new button(centerX, btnJugar.getY() -btnAlto-gap, btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonAjustes");
-        btnTitulo = new button(anchoPantalla/2 - (3*btnAncho)/2, btnJugar.getY() + btnAlto + 2*gap, 3* btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "titulo");
+
+        float tituloAncho = 3 * btnAncho;
+        float tituloX = (anchoPantalla - tituloAncho) / 2f;
+        btnTitulo = new button(tituloX, btnJugar.getY() + btnAlto + 2*gap, tituloAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "titulo");
 
         btnSalir = new button(centerX, btnAjustes.getY() - btnAlto - gap, btnAncho, btnAlto, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
-        btnVolver = new button(2 * uW, 2 * uH, 25 * uW, 18 * uH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
+
+        // --- PANTALLA AJUSTES (Layout Vertical Corregido) ---
+        infoW = 32 * uW;
+        infoH = 77 * uH;
+        infoX = (anchoPantalla - infoW) / 2f;
+        infoY = altoPantalla - infoH - 3 * uH;
+
+        musicW = 20 * uW;
+        musicH = 12 * uH;
+        musicX = (anchoPantalla - musicW) / 2f;
+        musicY = infoY - musicH ;
 
         barraAncho = 40 * uW;
-        barraAlto = 5 * uH;
+        barraAlto = 3 * uH;
         barraX = (anchoPantalla - barraAncho) / 2f;
-        barraY = altoPantalla / 2f;
+        barraY = musicY - barraAlto - uH;
 
-        // Botones para subir y bajar volumen a los lados de la barra
+        float btnVolSize = 3.5f * uW;
+        btnMenosVol = new button(barraX - btnVolSize - uW, barraY + (barraAlto/2f) - (btnVolSize/2f), btnVolSize, btnVolSize, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonMenos");
+        btnMasVol = new button(barraX + barraAncho + uW, barraY + (barraAlto/2f) - (btnVolSize/2f), btnVolSize, btnVolSize, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonMas");
 
-        btnMenosVol = new button(barraX - 12 * uW, barraY - 2*uH, 10 * uW, 10 * uH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonMenos");
-        btnMasVol = new button(barraX + barraAncho + 2 * uW, barraY - 2*uH, 10 * uW, 10 * uH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonMas");
+        float btnVolverW = 22 * uW;
+        float btnVolverH = 10 * uH;
+        btnVolver = new button( 0.5f* uW, 2 * uH, btnVolverW, btnVolverH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
 
         explosiones = new ArrayList<>();
     }
@@ -266,12 +289,18 @@ public class Controlador {
             btnAjustes.pintar(batch, galeriaImagenes);
         }
         else if (pantallaActual == Pantalla.AJUSTES) {
-            // Dibujamos el botón de volver
-            btnVolver.pintar(batch, galeriaImagenes);
+            // Dibujamos elementos centrados
+            batch.draw(galeriaImagenes.get("infoMenu"), infoX, infoY, infoW, infoH);
+            batch.draw(galeriaImagenes.get("musicHeader"), musicX, musicY, musicW, musicH);
+
+            // Control de volumen
             btnMasVol.pintar(batch, galeriaImagenes);
             btnMenosVol.pintar(batch, galeriaImagenes);
             batch.draw(galeriaImagenes.get("barra2"), barraX, barraY, barraAncho, barraAlto);
             batch.draw(galeriaImagenes.get("barra"), barraX, barraY, barraAncho * volumenActual, barraAlto);
+
+            // Botón volver centrado abajo
+            btnVolver.pintar(batch, galeriaImagenes);
         }
     }
 
