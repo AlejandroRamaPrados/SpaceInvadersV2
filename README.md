@@ -1,62 +1,54 @@
-# 🚀 Space Invaders - Versión Jugable Disponible
+# Space Invaders - Versión 2 🚀
 
-¡La espera ha terminado!
+¡Bienvenido a la segunda versión de este clásico juego de arcade adaptado para plataformas modernas! Esta edición incluye soporte multiplataforma para escritorio y Android, mecánicas de disparo automatizadas y un sistema de progresión infinita.
 
-Nos complace anunciar que la **versión jugable de Space Invaders ya está disponible** 🎉  
-Ahora puedes disfrutar del clásico arcade directamente.
+## ⭐ Características principales
 
----
+*   **Disparo automático**: Olvídate de presionar botones para atacar; concéntrate al 100% en esquivar.
+*   **Niveles infinitos**: La dificultad escala dinámicamente a medida que destruyes oleadas de enemigos.
+*   **Multiplataforma**: Optimizado para jugar en computadoras de escritorio y dispositivos móviles Android.
+*   **Rendimiento fluido**: Desarrollado con un motor ligero ideal para cualquier pantalla.
 
-## 🕹️ Estado del Proyecto
+## 🎮 Controles
 
-✅ Versión jugable completada  
-✅ Mecánicas principales implementadas  
-✅ Enemigos funcionales  
-✅ Sistema de disparo activo  
-✅ Detección de colisiones  
+El juego adapta su jugabilidad dependiendo del dispositivo que utilices:
 
-El juego ya se puede ejecutar y jugar.
+### En Escritorio (PC / Mac / Linux)
+*   `A`: Mover a la izquierda.
+*   `D`: Mover a la derecha.
 
----
+### En Móvil (Android)
+*   **Tocar el extremo izquierdo** de la pantalla: Mover a la izquierda.
+*   **Tocar el extremo derecho** de la pantalla: Mover a la derecha.
 
-## 🎮 Cómo Jugar
+## 🛠️ Desarrollo e Instalación
 
-1. Clona o descarga el repositorio  
-2. Ejecuta el proyecto  
-3. ¡Empieza a defender la Tierra!
+Sigue estos pasos para clonar el proyecto y ejecutarlo localmente.
 
----
+### Prerrequisitos
+*   **Git** instalado en tu sistema.
+*   **Android Studio** (versión reciente).
+*   **SDK de Android** configurado.
 
-## 🎯 Objetivo del Juego
+### 1. Clonar el repositorio
+Abre tu terminal y ejecuta el siguiente comando para clonar el proyecto en tu máquina local:
+```bash
+git clone git@github.com:AlejandroRamaPrados/SpaceInvadersV2.git
+```
 
-Destruye todas las oleadas de invasores espaciales antes de que lleguen a tu posición.
+### 2. Abrir en Android Studio
+1. Abre **Android Studio**.
+2. Selecciona **Open** (Abrir) y busca la carpeta donde clonaste el proyecto.
+3. Espera a que termine la sincronización inicial de **Gradle** (esto puede tardar unos minutos la primera vez).
 
----
+### 3. Ejecutar el juego
+*   **Para Android**: Conecta un dispositivo físico mediante depuración USB o inicia un emulador. Haz clic en el botón verde de **Run (Play)** en la barra superior.
+*   **Para Escritorio**: Ejecuta la tarea correspondiente de Gradle (por ejemplo, `./gradlew desktop:run`) o inicia la clase principal desde el propio IDE según el motor que utilices.
 
-## ⌨️ Controles
+## 📈 Novedades de la Versión 2
 
-| Acción            | Interacción |
-|------------------|------------|
-| Moverse          | Clic en la pantalla |
-| Detenerse        | Doble clic |
-| Disparar         | Espacio |
-
----
-
-## 🛠️ Próximas Mejoras
-
-- Sistema de puntuación  
-- Sonidos y música  
-- Pantalla de Game Over  
-- Optimización visual  
-
----
-
-## 📢 Notas
-
-Esta es una versión inicial jugable.  
-Se seguirán añadiendo mejoras y nuevas funcionalidades.
-
----
-
-¡Prepárate para salvar el planeta! 🌍👾
+*   **Menú principal**: Nueva interfaz de inicio antes de empezar la partida.
+*   **Banda sonora**: Incorporación de música de fondo para una mejor experiencia.
+*   **Diseño responsive**: Adaptación visual fluida a cualquier tamaño de pantalla.
+*   **Niveles infinitos**: Sistema de juego sin fin con dificultad progresiva.
+*   **Controles más amigables**: Mejoras en la precisión del teclado y de la pantalla táctil.
