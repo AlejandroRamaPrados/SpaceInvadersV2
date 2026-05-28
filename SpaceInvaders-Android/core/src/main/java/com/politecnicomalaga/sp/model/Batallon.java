@@ -12,8 +12,12 @@ public class Batallon {
     private Ovni.Direccion direccionActual;
     private float velocidad;
 
-    //Constructor
-    //Con todos los parámetros necesarios para inicializar
+    // Para la animación de aparición
+    private float yObjetivo;
+    private boolean apareciendo;
+    private float velocidadAparicion;
+
+    // Constructor actualizado para soportar patrones
     public Batallon(float xInicial, float yInicial, float espacioVertical,
                     float width, float height,
                     Ovni.Estado estado,
@@ -29,18 +33,24 @@ public class Batallon {
                     int probabilidadDisparoNormal,
                     int probabilidadDisparoTanque,
                     float espacioEntreNaves,
-                    float velocidad) {
+                    float velocidad,
+                    boolean[][] patterns) {
+
         this.velocidad = velocidad;
         this.direccionActual = direccionActual;
-        this.escuadrones = new Escuadron[4]; //Inicializamos el número de escuadrones 4.
+        this.escuadrones = new Escuadron[4];
 
-        //Cargamos los escuadrones con nuestro método load
-        loadEscuadrones(xInicial, yInicial, espacioVertical, width, height,
-            estado, direccionActual, texturaNormal,texturaTanque, vidasNormal,vidasTanque, cadencia, anchoBala, altoBala, velocidadBala,
-            probabilidadDisparoNormal,probabilidadDisparoTanque, espacioEntreNaves);
+        // Animación: Empezamos más arriba de lo indicado
+        this.yObjetivo = yInicial;
+        float yInicioAnimacion = yInicial + 300f; // 300 pixeles arriba
+        this.apareciendo = true;
+        this.velocidadAparicion = 150f; // Pixeles por segundo
+
+        loadEscuadrones(xInicial, yInicioAnimacion, espacioVertical, width, height,
+            estado, direccionActual, texturaNormal, texturaTanque, vidasNormal, vidasTanque, cadencia, anchoBala, altoBala, velocidadBala,
+            probabilidadDisparoNormal, probabilidadDisparoTanque, espacioEntreNaves, patterns);
     }
 
-    // Método load, en filas
     private void loadEscuadrones(float x, float y, float espacioVertical,
                                  float width, float height,
                                  Ovni.Estado estado,
@@ -55,17 +65,17 @@ public class Batallon {
                                  float velocidadBala,
                                  int probabilidadDisparoNormal,
                                  int probabilidadDisparoTanque,
-                                 float espacioEntreNaves) {
+                                 float espacioEntreNaves,
+                                 boolean[][] patterns) {
 
         for (int i = 0; i < this.escuadrones.length; i++) {
-
             float yEscuadron = y - (i * (height + espacioVertical));
-
             boolean esTanque = (i >= 2);
-
             String textura = esTanque ? texturaTanque : texturaNormal;
             int vidas = esTanque ? vidasTanque : vidasNormal;
             int probDisparo = esTanque ? probabilidadDisparoTanque : probabilidadDisparoNormal;
+
+            boolean[] pattern = (patterns != null && i < patterns.length) ? patterns[i] : null;
 
             this.escuadrones[i] = new Escuadron(
                 x,
@@ -81,92 +91,76 @@ public class Batallon {
                 altoBala,
                 velocidadBala,
                 probDisparo,
-                espacioEntreNaves
+                espacioEntreNaves,
+                pattern
             );
         }
     }
 
-    //Getters y Setters
-    public Escuadron[] getEscuadrones() {
-        return escuadrones;
-    }
-    public void setEscuadrones(Escuadron[] escuadrones) {
-        this.escuadrones = escuadrones;
-    }
-    public Ovni.Direccion getDireccionActual() {
-        return direccionActual;
-    }
-    public void setDireccionActual(Ovni.Direccion direccionActual) {
-        this.direccionActual = direccionActual;
-    }
-    public float getVelocidad() {
-        return velocidad;
-    }
-    public void setVelocidad(float velocidad) {
-        this.velocidad = velocidad;
-    }
-    //Métodos
-    //Mover los escuadrones
-    public void mover(float anchoPantalla, float altoPantalla, float cuantoBaja){ //Nos deberán pasar el ancho de la pantalla el alto de la pantalla y cuanto queremos que baje cada vez que llega al borde
-        if (escuadrones == null || escuadrones.length == 0) return; //Si por lo que sea no se ha inicializado todavía no hacemos nada
+    public void mover(float anchoPantalla, float altoPantalla, float cuantoBaja, float delta){
+        if (escuadrones == null || escuadrones.length == 0) return;
+
+        // Si está apareciendo, solo se mueve hacia abajo hasta su posición
+        if (apareciendo) {
+            float paso = velocidadAparicion * delta;
+            for (Escuadron esc : escuadrones) {
+                esc.bajar(paso);
+            }
+            // Comprobamos si el primer escuadrón ha llegado a su Y objetivo
+            if (escuadrones[0].getNavesEnemigas()[0].getY() <= yObjetivo) {
+                apareciendo = false;
+            }
+            return;
+        }
 
         boolean tocarBorde = false;
-
-        for (Escuadron esc : escuadrones) { //Recorremos los escuadrones preguntando si han tocado el borde
+        for (Escuadron esc : escuadrones) {
             if (esc.haTocadoBorde(anchoPantalla, direccionActual)){
                 tocarBorde = true;
                 break;
             }
         }
-        if (tocarBorde){ //En ese caso cambiamos la dirección y bajamos el batallón, utilizando el método cambiarDireccionYBajarse
+        if (tocarBorde){
             cambiarDireccionYBajarse(cuantoBaja);
         }
         else {
-            for (Escuadron esc : escuadrones) { //Caso contrario, movemos los escuadrones lateralmente usando el método implementado en escuadron
+            for (Escuadron esc : escuadrones) {
                 esc.moverLateralmente(direccionActual, velocidad);
             }
         }
     }
-    //Invertir la dirección y bajar el batallón
+
     private void cambiarDireccionYBajarse(float cuantoBaja) {
-        //Invertimos la dirección
         direccionActual = (direccionActual == Ovni.Direccion.DERECHA) ? Ovni.Direccion.IZQUIERDA : Ovni.Direccion.DERECHA;
-        //Bajar el batallón completo usando el método de la clase escuadron
         for (Escuadron esc : escuadrones) {
             esc.bajar(cuantoBaja);
         }
-        //Los movemos un pixel para que no este a true tocar borde por si acaso
         for (Escuadron esc : escuadrones) {
             esc.moverLateralmente(direccionActual, velocidad);
         }
     }
 
-    //El batallón dice disparar y los escuadrones ya se encargan de gestionar lo suyo.
     public void disparar() {
+        if (apareciendo) return; // No disparan mientras aparecen
         for (Escuadron esc : escuadrones) {
             esc.disparar();
         }
     }
 
-    //Gestionamos los disparos de los enemigos, batallón se lo pasa a escuadron y escuadron a nave Enemiga que se encarga del CRUD
     public void gestionarDisparos(float limiteMuerte) {
         for (Escuadron esc : escuadrones) {
             esc.gestionarDisparosEnemigos(limiteMuerte);
         }
     }
 
-    //Comprobamos si quedan tropas, si no quedan terminamos el juego más fácil para el controlador.
     public boolean tieneTropas() {
-        if (escuadrones == null || escuadrones.length == 0) return false; //Comprobamos si por lo que sea está vacío en ese caso obviamente no hay tropas
-
-        //El problema es que cuando mueren las naves siguen existiendo péro su estado está en Muerto
-        //Recorremos los escuadrones y preguntamos si tienen naves vivas
+        if (escuadrones == null || escuadrones.length == 0) return false;
         for (Escuadron esc : escuadrones) {
             if (esc.tieneNavesVivas()) {
-                return true; // En cuanto uno tenga una nave viva, el batallón sigue activo
+                return true;
             }
         }
-        return false; // Si revisa todos y nadie tiene naves vivas, se acabó el juego, hemos ganado
+        return false;
     }
 
     public void comprobarColisionesDisparo(NaveAmi naveAmiga){
@@ -174,6 +168,7 @@ public class Batallon {
             esc.comprobarColisionesDisparo(naveAmiga);
         }
     }
+
     public boolean comprobarSiMeHanDado(DisparoAmi disparoAmi){
         for (Escuadron esc : escuadrones){
             if (esc.comprobarSiMeHanDado(disparoAmi)) return true;
@@ -186,6 +181,7 @@ public class Batallon {
             esc.comprobarColisionesFisicas(naveAmiga);
         }
     }
+
     public boolean hayNavesVivas(){
         return tieneTropas();
     }
