@@ -126,10 +126,8 @@ public class Main extends ApplicationAdapter {
         image = new Texture("textMenu/Highscore.png");
         galeriaImagenes.put("highscore", image);
 
-
-
-
-
+        image = new Texture("GameOver/GameOverPrototipo.png");
+        galeriaImagenes.put("gameOver", image);
     }
 
     @Override

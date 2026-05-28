@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.politecnicomalaga.sp.Main;
 import com.politecnicomalaga.sp.model.Batallon;
 import com.politecnicomalaga.sp.model.DisparoAmi;
@@ -41,7 +42,7 @@ public class Controlador {
     private final float anchoPantalla,altoPantalla;
 
     private float btnAncho, btnAlto;
-    private enum Pantalla { MENU, JUEGO, AJUSTES}
+    private enum Pantalla { MENU, JUEGO, AJUSTES, DERROTA}
     private Pantalla pantallaActual = Pantalla.MENU;
     private button btnJugar, btnSalir, btnAjustes, btnVolver, btnTitulo;
 
@@ -194,6 +195,15 @@ public class Controlador {
         else if (pantallaActual == Pantalla.JUEGO) {
             cambiarSentidoNaveAmiga(x);
         }
+        else if (pantallaActual == Pantalla.DERROTA) {
+            if (btnJugar.click(x, yReal)) {
+                reiniciarJuego();
+                jugando = true;
+                pantallaActual = Pantalla.JUEGO;
+            } else if (btnSalir.click(x, yReal)) {
+                pantallaActual = Pantalla.MENU;
+            }
+        }
     }
     public void simulaMundo(float delta){
         //Actualizar fondo con delta para que sea responsive
@@ -216,7 +226,12 @@ public class Controlador {
             if (!jugando) {
                 comprobarYGuardarRecord();
                 musicaJuego.stop();
-                pantallaActual = Pantalla.MENU;
+                if (!naveAmiga.estaVivo()) {
+                    pantallaActual = Pantalla.DERROTA;
+                }
+                else {
+                    pantallaActual = Pantalla.MENU;
+                }
                 return;
             }
             if (!musicaJuego.isPlaying()) musicaJuego.play();
@@ -291,6 +306,26 @@ public class Controlador {
             }
         }
         else if (pantallaActual == Pantalla.MENU) {
+            float centerX = (anchoPantalla - btnAncho) / 2f;
+            float centerY = (altoPantalla - btnAlto) / 2f;
+            float gap = 2 * (altoPantalla / 100f);
+
+            btnJugar.setX(centerX);
+            btnJugar.setY(centerY);
+            btnJugar.setWidth(btnAncho);
+            btnJugar.setHeight(btnAlto);
+
+            btnAjustes.setX(centerX);
+            btnAjustes.setY(btnJugar.getY() - btnAlto - gap);
+            btnAjustes.setWidth(btnAncho);
+            btnAjustes.setHeight(btnAlto);
+
+            btnSalir.setX(centerX);
+            btnSalir.setY(btnAjustes.getY() - btnAlto - gap);
+            btnSalir.setWidth(btnAncho);
+            btnSalir.setHeight(btnAlto);
+
+
             btnTitulo.pintar(batch, galeriaImagenes);
             btnJugar.pintar(batch, galeriaImagenes);
             btnSalir.pintar(batch, galeriaImagenes);
@@ -329,6 +364,69 @@ public class Controlador {
 
             // Botón volver centrado abajo
             btnVolver.pintar(batch, galeriaImagenes);
+        }
+
+        else if (pantallaActual == Pantalla.DERROTA) {
+
+            // 1. DIBUJAR IMAGEN GAME OVER
+            Texture goTex = galeriaImagenes.get("gameOver");
+            float xGO = 0;
+            float anchoGO = 0;
+
+            if (goTex != null) {
+                anchoGO = anchoPantalla * 0.85f;
+                float proporcion = (float) goTex.getHeight() / (float) goTex.getWidth();
+                float altoGO = anchoGO * proporcion;
+
+                // Evitar que tape los botones
+                if (altoGO > altoPantalla * 0.50f) {
+                    altoGO = altoPantalla * 0.50f;
+                    anchoGO = altoGO / proporcion;
+                }
+
+                xGO = (anchoPantalla - anchoGO) / 2f;
+                float yGO = altoPantalla * 0.42f;
+
+                batch.draw(goTex, xGO, yGO, anchoGO, altoGO);
+            }
+
+            // 2. PUNTUACIÓN / RÉCORD CENTRADO
+            float tamNumG = anchoPantalla * 0.03f;
+
+            String recordString = String.valueOf(recordPuntuacion);
+            float anchoRecord = recordString.length() * tamNumG;
+
+            // Centrado respecto a la pantalla
+            float puntosX = (anchoPantalla - anchoRecord) / 2f;
+
+            // Si prefieres centrar respecto a la imagen Game Over:
+            // float puntosX = xGO + (anchoGO - anchoRecord) / 2f;
+
+            pintarRecord(
+                batch,
+                galeriaImagenes,
+                puntosX,
+                altoPantalla * 0.30f,
+                tamNumG
+            );
+
+            // 3. BOTONES
+            float btnW = anchoPantalla * 0.15f;
+            float btnH = altoPantalla * 0.08f;
+            float gapBtn = anchoPantalla * 0.05f;
+
+            btnJugar.setX((anchoPantalla / 2f) - btnW - gapBtn / 2f);
+            btnJugar.setY(altoPantalla * 0.10f);
+            btnJugar.setWidth(btnW);
+            btnJugar.setHeight(btnH);
+
+            btnSalir.setX((anchoPantalla / 2f) + gapBtn / 2f);
+            btnSalir.setY(altoPantalla * 0.10f);
+            btnSalir.setWidth(btnW);
+            btnSalir.setHeight(btnH);
+
+            btnJugar.pintar(batch, galeriaImagenes);
+            btnSalir.pintar(batch, galeriaImagenes);
         }
     }
 
@@ -450,6 +548,13 @@ public class Controlador {
             if (tex != null) {
                 batch.draw(tex, x + (i * tamNum), y, tamNum, tamNum);
             }
+        }
+    }
+    public void pintarPuntuacionPersonalizada(SpriteBatch batch, Map<String, Texture> galeria, float x, float y, float tam) {
+        String puntos = String.valueOf(puntuacion);
+        for (int i = 0; i < puntos.length(); i++) {
+            char c = puntos.charAt(i);
+            batch.draw(galeria.get("Number" + c + ".png"), x + (i * tam), y, tam, tam);
         }
     }
 }
