@@ -25,7 +25,7 @@ public class Controlador {
 
     private enum Pantalla { MENU, JUEGO, AJUSTES , DERROTA}
     private Pantalla pantallaActual = Pantalla.MENU;
-    private button btnJugar, btnSalir, btnAjustes, btnVolver, btnTitulo, btnMasVol, btnMenosVol;
+    private button btnJugar, btnSalir, btnAjustes, btnVolver, btnTitulo, btnMasVol, btnMenosVol, btnMenuDerrota;
     private float infoX, infoY, infoW, infoH, musicX, musicY, musicW, musicH, barraX, barraY, barraAncho, barraAlto;
 
     private Controlador(float anchoPantalla, float altoPantalla) {
@@ -83,6 +83,7 @@ public class Controlador {
         btnMenosVol = new button(barraX - bVs - uW, barraY + (barraAlto - bVs)/2f, bVs, bVs, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonMenos");
         btnMasVol = new button(barraX + barraAncho + uW, barraY + (barraAlto - bVs)/2f, bVs, bVs, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonMas");
         btnVolver = new button(0.5f * uW, 2 * uH, 22 * uW, 10 * uH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
+        btnMenuDerrota = new button(cX, btnAjustes.getY() - bH - gap, bW, bH, Ovni.Estado.VIVO, Ovni.Direccion.NOMOVER, "botonSalir");
         explosiones = new ArrayList<>();
     }
 
@@ -115,12 +116,13 @@ public class Controlador {
             }
         } else if (pantallaActual == Pantalla.JUEGO) {
             cambiarSentidoNaveAmiga(x);
-        } else if (pantallaActual == Pantalla.DERROTA) {
+        }
+        else if (pantallaActual == Pantalla.DERROTA) {
             if (btnJugar.click(x, yr)) {
                 reiniciarJuego();
                 jugando = true;
                 pantallaActual = Pantalla.JUEGO;
-            } else if (btnSalir.click(x, yr)) {
+            } else if (btnMenuDerrota.click(x, yr)) {
                 pantallaActual = Pantalla.MENU;
             }
         }
@@ -191,6 +193,29 @@ public class Controlador {
             pintarVida(batch, galeria);
             explosiones.forEach(e -> e.pintar(batch, galeria));
         } else if (pantallaActual == Pantalla.MENU) {
+            float uW = anchoPantalla / 100f;
+            float uH = altoPantalla / 100f;
+            float bW = 20 * uW; // Tamaño original definido en tu constructor
+            float bH = 13 * uH;
+            float gapMenu = 2 * uH;
+            float cX = (anchoPantalla - bW) / 2f;
+
+            btnJugar.setWidth(bW);
+            btnJugar.setHeight(bH);
+            btnJugar.setX(cX);
+            btnJugar.setY((altoPantalla - bH) / 2f);
+
+            btnAjustes.setWidth(bW);
+            btnAjustes.setHeight(bH);
+            btnAjustes.setX(cX);
+            btnAjustes.setY(btnJugar.getY() - bH - gapMenu);
+
+            btnSalir.setWidth(bW);
+            btnSalir.setHeight(bH);
+            btnSalir.setX(cX);
+            btnSalir.setY(btnAjustes.getY() - bH - gapMenu);
+
+
             btnTitulo.pintar(batch, galeria);
             btnJugar.pintar(batch, galeria);
             btnSalir.pintar(batch, galeria);
@@ -264,13 +289,13 @@ public class Controlador {
             btnJugar.setWidth(btnW);
             btnJugar.setHeight(btnH);
 
-            btnSalir.setX((anchoPantalla / 2f) + gapBtn / 2f);
-            btnSalir.setY(altoPantalla * 0.10f);
-            btnSalir.setWidth(btnW);
-            btnSalir.setHeight(btnH);
+            btnMenuDerrota.setX((anchoPantalla / 2f) + gapBtn / 2f);
+            btnMenuDerrota.setY(altoPantalla * 0.10f);
+            btnMenuDerrota.setWidth(btnW);
+            btnMenuDerrota.setHeight(btnH);
 
             btnJugar.pintar(batch, galeria);
-            btnSalir.pintar(batch, galeria);
+            btnMenuDerrota.pintar(batch, galeria);
         }
     }
 
