@@ -104,10 +104,10 @@ public class Controlador {
             if (btnVolver.click(x, yr)) {
                 pantallaActual = Pantalla.MENU;
             } else if (btnMasVol.click(x, yr)) {
-                volumenActual = Math.min(1.0f, volumenActual + 0.05f);
+                volumenActual = Math.min(1.0f, volumenActual + 0.005f);
                 actualizarVolumen();
             } else if (btnMenosVol.click(x, yr)) {
-                volumenActual = Math.max(0.0f, volumenActual - 0.05f);
+                volumenActual = Math.max(0.0f, volumenActual - 0.005f);
                 actualizarVolumen();
             }
         } else if (pantallaActual == Pantalla.JUEGO) {
