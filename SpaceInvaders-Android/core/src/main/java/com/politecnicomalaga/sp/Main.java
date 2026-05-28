@@ -123,6 +123,9 @@ public class Main extends ApplicationAdapter {
         image = new Texture("settingMenu/barra2.png");
         galeriaImagenes.put("barra2", image);
 
+        image = new Texture("textMenu/Highscore.png");
+        galeriaImagenes.put("highscore", image);
+
 
 
 

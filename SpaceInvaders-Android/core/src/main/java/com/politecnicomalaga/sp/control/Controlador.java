@@ -19,8 +19,11 @@ import com.politecnicomalaga.sp.model.button;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import com.badlogic.gdx.Preferences;
 
 public class Controlador {
+    private Preferences prefs;
+    private int recordPuntuacion;
     private Music musicaJuego, musicaMenu;
     private List<Explosion> explosiones;
     private static Controlador miSingle;
@@ -54,6 +57,9 @@ public class Controlador {
 
 
     private Controlador(float anchoPantalla, float altoPantalla) {
+        // En el constructor Controlador(...)
+        prefs = Gdx.app.getPreferences("SpaceInvadersSave");
+        recordPuntuacion = prefs.getInteger("highscore", 0);
         //Inicializamos variables de control responsive
         this.anchoPantalla = anchoPantalla;
         this.altoPantalla = altoPantalla;
@@ -208,6 +214,7 @@ public class Controlador {
 
             // Si tras comprobar resulta que has muerto, salimos para que no ejecute el resto
             if (!jugando) {
+                comprobarYGuardarRecord();
                 musicaJuego.stop();
                 pantallaActual = Pantalla.MENU;
                 return;
@@ -216,6 +223,7 @@ public class Controlador {
 
             // Comprobar si he ganado
             if (comprobarSiGano(batallon)) {
+                comprobarYGuardarRecord();
                 jugando = false;
                 pantallaActual = Pantalla.MENU; // <--- Importante para que salgan los botones
                 musicaJuego.stop();
@@ -283,10 +291,30 @@ public class Controlador {
             }
         }
         else if (pantallaActual == Pantalla.MENU) {
-            btnTitulo.pintar(batch,galeriaImagenes);
+            btnTitulo.pintar(batch, galeriaImagenes);
             btnJugar.pintar(batch, galeriaImagenes);
             btnSalir.pintar(batch, galeriaImagenes);
             btnAjustes.pintar(batch, galeriaImagenes);
+
+            // --- DIBUJAR RECORD ---
+            float tamNum = anchoPantalla * 0.03f;
+            float altoImagenLabel = tamNum * 0.8f;
+            float anchoImagenLabel = tamNum * 4f;
+
+            float margen = anchoPantalla * 0.02f;
+
+            // Calculamos la posición X para que el número aparezca a la derecha y el label justo antes
+            String recordS = String.valueOf(recordPuntuacion);
+            float anchoTotalRecord = anchoImagenLabel + (recordS.length() * tamNum);
+
+            float recordX = anchoPantalla - anchoTotalRecord - margen;
+            float recordY = altoPantalla - tamNum - margen;
+
+            // 1. Dibujamos el asset de "highscore"
+            batch.draw(galeriaImagenes.get("highscore"), recordX, recordY + (tamNum - altoImagenLabel)/2f, anchoImagenLabel, altoImagenLabel);
+
+            // 2. Dibujamos los números justo después (sumando el ancho de la imagen)
+            pintarRecord(batch, galeriaImagenes, recordX + anchoImagenLabel, recordY, tamNum);
         }
         else if (pantallaActual == Pantalla.AJUSTES) {
             // Dibujamos elementos centrados
@@ -403,5 +431,25 @@ public class Controlador {
     private void actualizarVolumen() {
         musicaJuego.setVolume(volumenActual);
         musicaMenu.setVolume(volumenActual);
+    }
+    private void comprobarYGuardarRecord() {
+        if (puntuacion > recordPuntuacion) {
+            recordPuntuacion = puntuacion;
+            prefs.putInteger("highscore", recordPuntuacion);
+            prefs.flush(); // IMPORTANTE: Esto guarda físicamente los datos en el disco
+        }
+    }
+
+    public void pintarRecord(SpriteBatch batch, Map<String, Texture> galeriaImagenes, float x, float y, float tamNum) {
+        String recordString = String.valueOf(recordPuntuacion);
+
+        for (int i = 0; i < recordString.length(); i++) {
+            char digito = recordString.charAt(i);
+            // Usamos tamNum que viene por parámetro
+            Texture tex = galeriaImagenes.get("Number" + digito + ".png");
+            if (tex != null) {
+                batch.draw(tex, x + (i * tamNum), y, tamNum, tamNum);
+            }
+        }
     }
 }
