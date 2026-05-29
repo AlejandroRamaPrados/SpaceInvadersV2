@@ -32,8 +32,16 @@ public class Main extends ApplicationAdapter {
         galeriaImagenes.put("sprites/enemigo1.png", image);
         image = new Texture("sprites/enemigo2.png");
         galeriaImagenes.put("sprites/enemigo2.png", image);
+        image = new Texture("sprites/enemigo2Danado.png");
+        galeriaImagenes.put("sprites/enemigo2Danado.png", image);
         image = new Texture("sprites/naveJugador.png");
         galeriaImagenes.put("sprites/naveJugador.png", image);
+        image = new Texture("sprites/naveJugadorDanoLig.png");
+        galeriaImagenes.put("sprites/naveJugadorDanoLig.png", image);
+        image = new Texture("sprites/naveJugadorDanoMed.png");
+        galeriaImagenes.put("sprites/naveJugadorDanoMed.png", image);
+
+
         image = new Texture("sprites/disparoAmi.png");
         galeriaImagenes.put("sprites/disparoAmi.png", image);
         image = new Texture("sprites/disparoEne.png");
